@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class FrontEnd {
 
-	public static ArrayList<String> accountFile;
+	public static ArrayList<String> accountFile = new ArrayList<>();
 	public static String user;
 	
 	// read the account file
