@@ -11,6 +11,7 @@ public class FrontEnd {
 	 * Where the x's are the account number, the y's are the account value, and the z's are the account name.
 	 **/
 	public static ArrayList<String> accountFile = new ArrayList<>();
+	public static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
 	public static String user;
 
 	/**
@@ -42,8 +43,12 @@ public class FrontEnd {
 
 			// add each line from the file into the global array list containing contents of the account file
 			String line;
+			Account account; /* for the account class */
 			while((line = reader.readLine()) != null) {
 				accountFile.add(line);
+				// using the account class:
+				account = new Account(getAccountNumber(line), getAccountValue(line), getAccountName(line));
+				accounts.add(account);
 			}
 
 		} catch (Exception e) {
@@ -108,15 +113,19 @@ public class FrontEnd {
 	 * @return an ArrayList containing all the account numbers from the account file.
 	 */
 	private static ArrayList<String> getAllAccountNumbers() {
-		ArrayList<String> accountNumbers = new ArrayList<>();
-
+		// Using the ArrayList<String> accountFile
+		ArrayList<String> accountNumbersFromString = new ArrayList<>();
 		for (String account : accountFile) {
-			String accountNumber = getAccountNumber(account);
-			accountNumbers.add(accountNumber);
-			System.out.println(accountNumber);
+			accountNumbersFromString.add(getAccountNumber(account));
 		}
 
-		return accountNumbers;
+		// Using the ArrayList<Account> accounts
+		ArrayList<Integer> accountNumbersFromAccount = new ArrayList<>();
+		for (Account account : accounts) {
+			accountNumbersFromAccount.add(account.getAccountNumber());
+		}
+
+		return accountNumbersFromString;
 	}
 
 	// write the transaction summary file - alex
@@ -169,7 +178,8 @@ public class FrontEnd {
 	public static void deleteacc() {
 		
 	}
-	
+
+	//todo: if you like the account class, create a new account with this method and then add to the list of accounts
 	public static void createAcc() {
 		if (user == "agent") {
 			/*-----Getting account Number and checking for validity -----*/ //STILL NEED TO CHECK ACC NUM IS DIFFERENT THAN ALL ACCOUNTS
@@ -270,7 +280,9 @@ public class FrontEnd {
 	// show the welcome message, read the account file 
 	// get the login input and call the login method.
 	public static void main(String[] args) {
-		while (true) {
+		// use sessionCurrent for the exit() method
+		Boolean sessionCurrent = true;
+		while (sessionCurrent) {
 			System.out.println("Welcome to QBASIC");
 			boolean inputOK = false;
 			do {
