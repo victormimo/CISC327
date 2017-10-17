@@ -38,27 +38,34 @@ public class FrontEnd {
 				accountFile.add(line);
 			}
 
-			
+			System.out.println("Account number: " + getAccountNumber(accountFile.get(0)));
+			System.out.println("Account name: " + getAccountName(accountFile.get(0)));
+			System.out.println("Account value: " + getAccountValue(accountFile.get(0)));
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 	}
 	public static String getAccountNumber(String accountInfo) {
-		String accountNumber = null;
-
-		return accountNumber;
+		String[] split = accountInfo.split("\\s+");
+		return split[0];
 	}
 
 	public static String getAccountValue(String accountInfo) {
-		String accountValue = null;
-
-		return accountValue;
+		String[] split = accountInfo.split("\\s+");
+		return split[1];
 	}
 
 	public static String getAccountName(String accountInfo) {
-		String accountName = null;
-
+		String accountName = "";
+		String[] split = accountInfo.split("\\s+");
+		for (int i = 2; i < split.length; i++) {
+			if (split[i] != null) {
+				accountName += split[i];
+				if (i < split.length - 1)
+					accountName += " ";
+			}
+		}
 		return accountName;
 	}
 
