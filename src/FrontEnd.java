@@ -89,13 +89,13 @@ public class FrontEnd {
 	}
 	
 	// check if the input is good.
-	public static boolean checkInputOK(String input; String[] validInput) {
+	public static boolean checkInputOK(String input, ArrayList<String> validInput) {
 		boolean inputOk = false;
-		for (valid : validInput) {
+		for (String valid : validInput) {
 			if (input.toLowerCase().equals(valid.toLowerCase()))
-				inputOK = true;
+				inputOk = true;
 		}
-		reutrn inputOK;
+		return inputOk;
 	}
 	
 	
@@ -112,14 +112,15 @@ public class FrontEnd {
 	}
 	
 	public static void deposit() {
+		String acc = "";
 		do {
 			System.out.println("Please enter account number: ");
 			String acc = getInput();
-		} while (checkInputOK(input, getAllAccountNumber()));
+		} while (checkInputOK(acc, getAllAccountNumbers()));
 		do { 
 			System.out.println("Please enter the amount to deposit in cents: ");
 			String amountString = getInput();
-		} while ()
+		} while (true)
 	}
 	
 	public static void deleteacc() {
@@ -163,10 +164,13 @@ public class FrontEnd {
 		System.out.println("C. deposit to an account");
 		System.out.println("D. withdraw from an account");
 		System.out.println("E. transfer from one account to another");
+		String input = "";
+		ArrayList<String> options = new ArrayList<>();
+		options.add("A");
 		do {
 			System.out.println("Please enter the letter: ");
-			String input = getInput();
-		} while (checkInputOK(input, ["A", "B", "C", "D", "E"]));
+			input = getInput();
+		} while (checkInputOK(input, options));
 		return input.toLowerCase();
 	}
 	
@@ -175,9 +179,14 @@ public class FrontEnd {
 		System.out.println("A. deposit to an account");
 		System.out.println("B. withdraw from an account");
 		System.out.println("C. transfer from one account to another");
+		String input = "";
+
+		// How to initialize an ArrayList
+
+
 		do {
 			System.out.println("Please enter the letter: ");
-			String input = getInput();
+			input = getInput();
 		} while (checkInputOK(input, ["A", "B", "C"]));
 		return input.toLowerCase();
 	}
