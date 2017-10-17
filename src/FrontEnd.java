@@ -35,7 +35,10 @@ public class FrontEnd {
 			String line = null;
 			while((line = reader.readLine()) != null) {
 				System.out.println(line);
+				accountFile.add(line);
 			}
+
+			
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -76,7 +79,6 @@ public class FrontEnd {
 	public static String getInput() {
 		Scanner screen = new Scanner(System.in);
 		String input = screen.nextLine();
-		screen.close();
 		return input;
 	}
 	
