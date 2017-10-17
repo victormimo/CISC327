@@ -6,78 +6,121 @@ import java.util.Scanner;
 
 public class FrontEnd {
 
+	/** The account file is stored as an array list of strings, where each string has the form:
+	 * xxxxxxx yyyyyy zzzzzzz
+	 * Where the x's are the account number, the y's are the account value, and the z's are the account name.
+	 **/
 	public static ArrayList<String> accountFile = new ArrayList<>();
 	public static String user;
-	
-	// read the account file
-	// alex
-	public static void readFile() {
-		// request file path from console
-		System.out.println("Please provide the path of the account list file");
-		try {
-			// use the file path to get a file
-			String input = getInput();
-			Path path = FileSystems.getDefault().getPath(input);
-			File file = new File(input);
 
-			if (file.exists()) {
-				System.out.println("\tFile found.");
-			} else {
+	/**
+	 * Reads the account file.
+	 *
+	 * Prompts the user for the path of the account file, and returns a warning to the user if the file isn't found at
+	 * that path.
+	 * Reads each line from the account file and adds it to the global array list containing the account file data.
+	 * todo: add an error chain if the file reading is unsuccessful
+	 */
+	private static void readFile() {
+		// request file path from console
+		System.out.println("Please enter the path of the account list file.");
+		try {
+			// use the file path from the user to get the file
+			String pathFromUser = getInput();
+			Path path = FileSystems.getDefault().getPath(pathFromUser);
+			File file = new File(pathFromUser); /* used to determine that there is a file at that path */
+
+			// If the file doesn't exist, warn user and return.
+			if (!file.exists()) {
 				System.out.println("\tFile not found.");
 				return;
 			}
 
-			// assumed that file is coded in US-ASCII
+			// create a reader to read the file, tell the reader how the file is encoded (assumed UTF-8)
 			Charset charset = Charset.forName("UTF-8");
 			BufferedReader reader = Files.newBufferedReader(path, charset);
 
-			// print each line of the file
-			String line = null;
+			// add each line from the file into the global array list containing contents of the account file
+			String line;
 			while((line = reader.readLine()) != null) {
-				System.out.println(line);
 				accountFile.add(line);
 			}
-
-			System.out.println("Account number: " + getAccountNumber(accountFile.get(0)));
-			System.out.println("Account name: " + getAccountName(accountFile.get(0)));
-			System.out.println("Account value: " + getAccountValue(accountFile.get(0)));
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
 	}
-	public static String getAccountNumber(String accountInfo) {
+
+	/**
+	 * Retrieves the account number from an account in its String format.
+	 * todo: check that the String provided is a valid account info String
+	 *
+	 * @param accountInfo - the String containing the information for an account.
+	 * @return the account number.
+	 */
+	private static String getAccountNumber(String accountInfo) {
+		// since the account information is separated by spaces, split string at all spaces and take the first split
 		String[] split = accountInfo.split("\\s+");
 		return split[0];
 	}
 
-	public static String getAccountValue(String accountInfo) {
+	/**
+	 * Retrieves the account value from an account in its String format.
+	 *
+	 * @param accountInfo - the String containing the information for an account.
+	 * @return the account's value.
+	 */
+	private static String getAccountValue(String accountInfo) {
+		// since the account information is separated by spaces, split string at all spaces and take the second split
 		String[] split = accountInfo.split("\\s+");
 		return split[1];
 	}
 
-	public static String getAccountName(String accountInfo) {
+	/**
+	 * Retrieves the account name from an account in its String format
+	 *
+	 * @param accountInfo - the String containing the information for an account.
+	 * @return the account's name.
+	 */
+	private static String getAccountName(String accountInfo) {
 		String accountName = "";
+
+		// since the account info is separated by spaces, split string at all spaces
+		// the account name starts at the third split, but may contain spaces that we don't want to erase, so those
+		// 		spaces need to be added back to the name
 		String[] split = accountInfo.split("\\s+");
 		for (int i = 2; i < split.length; i++) {
 			if (split[i] != null) {
 				accountName += split[i];
+				// if there are more parts to add to the name that have been split at the spaces, add a space to the
+				// 		variable containing the account name (no lost information)
 				if (i < split.length - 1)
 					accountName += " ";
 			}
 		}
+
 		return accountName;
 	}
 
-	public static ArrayList<String> getAllAccountNumbers() {
+	/**
+	 * Retrieves all the account numbers from the file and wraps them up into an ArrayList of type String.
+	 *
+	 * @return an ArrayList containing all the account numbers from the account file.
+	 */
+	private static ArrayList<String> getAllAccountNumbers() {
 		ArrayList<String> accountNumbers = new ArrayList<>();
+
+		for (String account : accountFile) {
+			String accountNumber = getAccountNumber(account);
+			accountNumbers.add(accountNumber);
+			System.out.println(accountNumber);
+		}
 
 		return accountNumbers;
 	}
-	
-	// alex
-	// write the transaction summary file
-	public static void writeFile(String input) {
+
+	// write the transaction summary file - alex
+	private static void writeFile(String input) {
 		
 	}
 	
