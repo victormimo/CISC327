@@ -44,6 +44,9 @@ public class FrontEnd {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+<<<<<<< HEAD
+=======
 	public static String getAccountNumber(String accountInfo) {
 		String accountNumber = null;
 
@@ -69,6 +72,7 @@ public class FrontEnd {
 	}
 	
 	// alex
+>>>>>>> 0bff59c34b1a6c440d3312e0f911e92bf9cc3492
 	// write the transaction summary file
 	public static void writeFile(String input) {
 		
@@ -200,7 +204,7 @@ public class FrontEnd {
 	// show the welcome message, read the account file 
 	// get the login input and call the login method.
 	public static void main(String[] args) {
-
+<<<<<<< HEAD
 		while (true) {
 			System.out.println("Welcome to QBASIC");
 			boolean inputOK = false;
@@ -212,6 +216,7 @@ public class FrontEnd {
 			} while (!inputOK);
 			login();
 		}
+=======
 		System.out.println("Welcome to QBASIC");
 		boolean inputOK = false;
 		do {
@@ -223,6 +228,6 @@ public class FrontEnd {
 		login();
 
 		readFile();
-
+>>>>>>> 0bff59c34b1a6c440d3312e0f911e92bf9cc3492
 	}
 }
