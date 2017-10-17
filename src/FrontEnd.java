@@ -7,6 +7,7 @@ public class FrontEnd {
 	public static String user;
 	
 	// read the account file
+	// alex
 	public static void readFile() {
 		
 	}
@@ -15,7 +16,7 @@ public class FrontEnd {
 		
 	}
 	
-	
+	// alex
 	// write the transaction summary file
 	public static void writeFile(String input) {
 		
