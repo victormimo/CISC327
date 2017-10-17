@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class FrontEnd {
 
 	public static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
+	public static Path outputFilePath;
 	public static String user;
 
 	/**
@@ -115,9 +116,25 @@ public class FrontEnd {
 		return accountNumbers;
 	}
 
-	// write the transaction summary file - alex
+	/**
+	 * Initialized the output file, to be called at the beginning of a session.
+	 */
+	private static void initializeOutputFile() {
+		outputFilePath = FileSystems.getDefault().getPath("output_log");
+	}
+
+	/**
+	 * Writes logs to the output file.
+	 * @param input - the data to be written onto the output file.
+	 */
 	private static void writeFile(String input) {
-		
+		Charset charset = Charset.forName("US-ASCII");
+
+		try (BufferedWriter writer = Files.newBufferedWriter(outputFilePath, charset)) {
+			writer.write(input, 0, input.length());
+		} catch (IOException x) {
+			System.err.format("IOException: %s%n", x);
+		}
 	}
 	
 	// get the console window input
