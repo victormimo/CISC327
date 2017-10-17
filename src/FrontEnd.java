@@ -115,12 +115,12 @@ public class FrontEnd {
 		String acc = "";
 		do {
 			System.out.println("Please enter account number: ");
-			String acc = getInput();
+			acc = getInput();
 		} while (checkInputOK(acc, getAllAccountNumbers()));
 		do { 
 			System.out.println("Please enter the amount to deposit in cents: ");
 			String amountString = getInput();
-		} while (true)
+		} while (true);
 	}
 	
 	public static void deleteacc() {
@@ -167,6 +167,10 @@ public class FrontEnd {
 		String input = "";
 		ArrayList<String> options = new ArrayList<>();
 		options.add("A");
+		options.add("B");
+		options.add("C");
+		options.add("D");
+		options.add("E");
 		do {
 			System.out.println("Please enter the letter: ");
 			input = getInput();
@@ -182,22 +186,28 @@ public class FrontEnd {
 		String input = "";
 
 		// How to initialize an ArrayList
-
+		ArrayList<String> arrayList = new ArrayList<>();
+		arrayList.add("A");
+		arrayList.add("B");
+		arrayList.add("C");
 
 		do {
 			System.out.println("Please enter the letter: ");
 			input = getInput();
-		} while (checkInputOK(input, ["A", "B", "C"]));
+		} while (checkInputOK(input, arrayList));
 		return input.toLowerCase();
 	}
 	
 	// get the user, get the transaction and call the other transaction
 	public static void login() {
 		String tran = "";
+		ArrayList<String> arrayList = new ArrayList<>();
+		arrayList.add("ATM");
+		arrayList.add("agent");
 		do {
 			System.out.println("Login as: \"ATM\" or \"agent\")");
 			user = getInput();
-		} while (checkInputOK(user, ["ATM", "agent"]));
+		} while (checkInputOK(user, arrayList));
 		if (user.equals("agent")) 
 			tran = loginAgent();
 		else
