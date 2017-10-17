@@ -11,6 +11,11 @@ public class FrontEnd {
 		
 	}
 	
+	public static void readFile2() {
+		
+	}
+	
+	
 	// write the transaction summary file
 	public static void writeFile(String input) {
 		
