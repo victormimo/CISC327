@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d939fa32-52b1-467d-b578-81ce45095df7" name="Default" comment="closed scanner once string is read">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/FrontEnd.java" afterPath="$PROJECT_DIR$/src/FrontEnd.java" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
@@ -22,8 +21,8 @@
       <file leaf-file-name="FrontEnd.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/FrontEnd.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="379">
-              <caret line="204" column="5" lean-forward="true" selection-start-line="204" selection-start-column="5" selection-end-line="204" selection-end-column="5" />
+            <state relative-caret-position="79">
+              <caret line="133" column="50" lean-forward="false" selection-start-line="133" selection-start-column="50" selection-end-line="133" selection-end-column="50" />
               <folding />
             </state>
           </provider>
@@ -603,7 +602,7 @@
       <updated>1508247162824</updated>
       <workItem from="1508247164505" duration="4401000" />
       <workItem from="1508263630288" duration="5000" />
-      <workItem from="1508265153075" duration="160000" />
+      <workItem from="1508265153075" duration="221000" />
     </task>
     <task id="LOCAL-00001" summary="added my name to the methods i'll write">
       <created>1508247734058</created>
@@ -623,7 +622,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="6021000" />
+    <option name="totallyTimeSpent" value="6082000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1680" height="951" extended-state="6" />
@@ -723,8 +722,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/FrontEnd.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="379">
-          <caret line="204" column="5" lean-forward="true" selection-start-line="204" selection-start-column="5" selection-end-line="204" selection-end-column="5" />
+        <state relative-caret-position="79">
+          <caret line="133" column="50" lean-forward="false" selection-start-line="133" selection-start-column="50" selection-end-line="133" selection-end-column="50" />
           <folding />
         </state>
       </provider>

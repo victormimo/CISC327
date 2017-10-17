@@ -126,7 +126,7 @@ public class FrontEnd {
 		
 	}
 	
-	public static void creatAcc() {
+	public static void createAcc() {
 		if (user == "agent") {
 			/*-----Getting account Number and checking for validity -----*/ //STILL NEED TO CHECK ACC NUM IS DIFFERENT THAN ALL ACCOUNTS
 			System.out.println("Please type in account number 7 digits long not starting with 0");
@@ -184,16 +184,17 @@ public class FrontEnd {
 	
 	// get the user, get the transaction and call the other transaction
 	public static void login() {
+		String tran = "";
 		do {
 			System.out.println("Login as: \"ATM\" or \"agent\")");
 			user = getInput();
 		} while (checkInputOK(user, ["ATM", "agent"]));
 		if (user.equals("agent")) 
-			String tran = loginAgent();
+			tran = loginAgent();
 		else
-			String tran = loginATM();
+			tran = loginATM();
 		if (tran.equals("a"))
-			creatacc();
+			createAcc();
 		else if (tran.equals("b"))
 			deleteacc();
 		else if (tran.equals("c"))
