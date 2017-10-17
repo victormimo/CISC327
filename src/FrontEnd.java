@@ -1,19 +1,69 @@
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class FrontEnd {
 
-	public static ArrayList<Integer> accountFile;
+	public static ArrayList<String> accountFile;
 	public static String user;
 	
 	// read the account file
 	// alex
 	public static void readFile() {
-		
+		// request file path from console
+		System.out.println("Please provide the path of the account list file");
+		try {
+			// use the file path to get a file
+			String input = getInput();
+			Path path = FileSystems.getDefault().getPath(input);
+			File file = new File(input);
+
+			if (file.exists()) {
+				System.out.println("\tFile found.");
+			} else {
+				System.out.println("\tFile not found.");
+				return;
+			}
+
+			// assumed that file is coded in US-ASCII
+			Charset charset = Charset.forName("UTF-8");
+			BufferedReader reader = Files.newBufferedReader(path, charset);
+
+			// print each line of the file
+			String line = null;
+			while((line = reader.readLine()) != null) {
+				System.out.println(line);
+			}
+
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	
-	public static void readFile2() {
-		
+	public static String getAccountNumber(String accountInfo) {
+		String accountNumber = null;
+
+		return accountNumber;
+	}
+
+	public static String getAccountValue(String accountInfo) {
+		String accountValue = null;
+
+		return accountValue;
+	}
+
+	public static String getAccountName(String accountInfo) {
+		String accountName = null;
+
+		return accountName;
+	}
+
+	public static ArrayList<String> getAllAccountNumbers() {
+		ArrayList<String> accountNumbers = new ArrayList<>();
+
+		return accountNumbers;
 	}
 	
 	// alex
@@ -26,6 +76,7 @@ public class FrontEnd {
 	public static String getInput() {
 		Scanner screen = new Scanner(System.in);
 		String input = screen.nextLine();
+		screen.close();
 		return input;
 	}
 	
@@ -71,5 +122,7 @@ public class FrontEnd {
 				inputOK = true;
 		} while (!inputOK);
 		login();
+
+		readFile();
 	}
 }
