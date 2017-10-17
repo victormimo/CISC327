@@ -6,11 +6,6 @@ import java.util.Scanner;
 
 public class FrontEnd {
 
-	/** The account file is stored as an array list of strings, where each string has the form:
-	 * xxxxxxx yyyyyy zzzzzzz
-	 * Where the x's are the account number, the y's are the account value, and the z's are the account name.
-	 **/
-	public static ArrayList<String> accountFile = new ArrayList<>();
 	public static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
 	public static String user;
 
@@ -45,7 +40,6 @@ public class FrontEnd {
 			String line;
 			Account account; /* for the account class */
 			while((line = reader.readLine()) != null) {
-				accountFile.add(line);
 				// using the account class:
 				account = new Account(getAccountNumber(line), getAccountValue(line), getAccountName(line));
 				accounts.add(account);
@@ -112,20 +106,13 @@ public class FrontEnd {
 	 *
 	 * @return an ArrayList containing all the account numbers from the account file.
 	 */
-	private static ArrayList<String> getAllAccountNumbers() {
-		// Using the ArrayList<String> accountFile
-		ArrayList<String> accountNumbersFromString = new ArrayList<>();
-		for (String account : accountFile) {
-			accountNumbersFromString.add(getAccountNumber(account));
-		}
-
+	private static ArrayList<Integer> getAllAccountNumbers() {
 		// Using the ArrayList<Account> accounts
-		ArrayList<Integer> accountNumbersFromAccount = new ArrayList<>();
+		ArrayList<Integer> accountNumbers = new ArrayList<>();
 		for (Account account : accounts) {
-			accountNumbersFromAccount.add(account.getAccountNumber());
+			accountNumbers.add(account.getAccountNumber());
 		}
-
-		return accountNumbersFromString;
+		return accountNumbers;
 	}
 
 	// write the transaction summary file - alex
@@ -165,10 +152,11 @@ public class FrontEnd {
 	
 	public static void deposit() {
 		String acc = "";
+		ArrayList<String> holderForGetAllAccountNumbers = new ArrayList<>();
 		do {
 			System.out.println("Please enter account number: ");
 			acc = getInput();
-		} while (checkInputOK(acc, getAllAccountNumbers()));
+		} while (checkInputOK(acc, holderForGetAllAccountNumbers));
 		do { 
 			System.out.println("Please enter the amount to deposit in cents: ");
 			String amountString = getInput();
