@@ -201,13 +201,12 @@ public class FrontEnd {
 		else if (tran.equals("d"))
 			withdraw();
 		else
-			transfer;
+			transfer();
 	}
 	
 	// show the welcome message, read the account file 
 	// get the login input and call the login method.
 	public static void main(String[] args) {
-
 		while (true) {
 			System.out.println("Welcome to QBASIC");
 			boolean inputOK = false;
@@ -218,19 +217,7 @@ public class FrontEnd {
 					inputOK = true;
 			} while (!inputOK);
 			login();
+			readFile();
 		}
-		System.out.println("Welcome to QBASIC");
-		boolean inputOK = false;
-		do {
-			System.out.println("please type login");
-			String input = getInput();
-			if (input.equals("login"))
-				inputOK = true;
-		} while (!inputOK);
-		login();
-		//asfasdfafdafdfadf
-
-		readFile();
-
 	}
 }
