@@ -103,8 +103,33 @@ public class FrontEnd {
 		
 	}
 	
-	public static void creatacc() {
-		
+	public static void creatAcc() {
+		if (user == "agent") {
+			/*-----Getting account Number and checking for validity -----*/ //STILL NEED TO CHECK ACC NUM IS DIFFERENT THAN ALL ACCOUNTS
+			System.out.println("Please type in account number 7 digits long not starting with 0");
+			String accountNumStr = getInput(); //get the account number
+			int accountNumber =Integer.parseInt(accountNumStr); // convert to integer
+			do {
+				System.out.println("Please enter valid account number");
+				accountNumStr = getInput();
+				accountNumber = Integer.parseInt(accountNumStr);	
+			} while(String.valueOf(Math.abs((long)accountNumber)).charAt(0) == '0' || String.valueOf(accountNumber).length() != 7);
+	
+			/*-----Getting account Name and checking for validity -----*/
+			System.out.println("Please enter account name between 3 and 30 alphanumeric digits");
+			String accountName = getInput(); //get the account name
+			do {
+				System.out.println("Please enter valid account name");
+				accountName = getInput();
+			}while(accountName.length() < 3 && accountName.length() > 30 && !accountName.matches("[A-Za-z0-9]+"));
+
+			// write the new account to the transaction file
+			String userInput = accountNumber + " " + accountName;
+			writeFile(userInput);
+		} else {
+			System.out.println("Can't create an account if you're not an agent");
+			return;
+		}
 	}
 	
 	// get the user, get the transaction and call the other transaction
