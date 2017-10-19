@@ -27,7 +27,7 @@ public class FrontEnd {
 		//System.out.println("Please enter the path of the account list file.");
 		try {
 			// use the file path from the user to get the file
-			String pathFromUser = "/MasterAccountFileValid.txt";
+			String pathFromUser = "MasterAccountFileValid.txt";
 			Path path = FileSystems.getDefault().getPath(pathFromUser);
 			File file = new File(pathFromUser); /* used to determine that there is a file at that path */
 
@@ -386,7 +386,7 @@ public class FrontEnd {
 		readFile();
 		while (!logout) {
 			String tran;
-			if (user.equals("agent"))
+			if (UserType.AGENT.equals(user))
 				tran = loginAgent();
 			else
 				tran = loginATM();
