@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 public class FrontEnd {
 
+
 	public static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
 	public static UserType user; /* user is "atm" or "agent" */
     public static PrintWriter logFile; /* the log file for all transactions */
@@ -108,14 +109,17 @@ public class FrontEnd {
 	 * @return a String array containing all the account numbers from the account file.
 	 */
 	private static String[] getAllAccNumStr() {
+
         // Using the ArrayList<Account> accounts
 		ArrayList<Integer> accountNumbersFromAccount = new ArrayList<>();
+
 		for (Account account : accounts) {
 			accountNumbersFromAccount.add(account.getAccountNumber());
 		}
 		String[] accNumString = new String[accountNumbersFromAccount.size()];
 		for (int i = 0; i < accountNumbersFromAccount.size(); i++) {
 			accNumString[i] = accountNumbersFromAccount.get(i).toString();
+
 		}
 		return accNumString;
 	}
@@ -290,21 +294,20 @@ public class FrontEnd {
 	}
 
 	public static void deleteAcc() {
-		System.out.println("Please enter the account number you wish to delete");
-		String accNumber = getInput();
+		System.out.println("Please enter the account number and name you wish to delete");
+		String input = getInput();
+		String[] split = input.split("\\s+");
+		String accNumber = split[0];
 
+		while(newAcctOK(accNumber)) { // newAccOK returns true if account doesnt exist
+			System.out.println("Invalid account number, please enter valid account number");
+			accNumber = getInput();
+		}
 
-
-
-
-
-		String accName = getInput();
-
-
-
-
-
-
+		for(Account account : accounts){
+			if (account.getAccountNumber().equals(accNumber))
+				accounts.remove(account);
+			}
 
 	}
 
@@ -323,27 +326,31 @@ public class FrontEnd {
 
 	}
 
-	//todo: if you like the account class, create a new account with this method and then add to the list of accounts
+	/**
+	 * create new account by accepting account number and name from user
+	 * only valid in agent mode
+	 * adds account to account arraylist
+	 */
 	public static void createAcc() {
 		/*-----Getting account Number and checking for validity -----*/ //STILL NEED TO CHECK ACC NUM IS DIFFERENT THAN ALL ACCOUNTS
 		System.out.println("Please type in account number 7 digits long not starting with 0");
 		String accountNumStr = getInput(); //get the account number
 		int accountNumber =Integer.parseInt(accountNumStr); // convert to integer
-		do {
+		while(String.valueOf(Math.abs((long)accountNumber)).charAt(0) == '0' || String.valueOf(accountNumber).length() != 7 || !newAcctOK(accountNumStr)){
 			System.out.println("Please enter valid account number");
 			accountNumStr = getInput();
 			accountNumber = Integer.parseInt(accountNumStr);
-		} while(String.valueOf(Math.abs((long)accountNumber)).charAt(0) == '0' || String.valueOf(accountNumber).length() != 7 || !newAcctOK(accountNumStr));
+		}
 
 		/*-----Getting account Name and checking for validity -----*/
 		System.out.println("Please enter account name between 3 and 30 alphanumeric digits");
 		String accountName = getInput(); //get the account name
-		do {
+		while(accountName.length() < 3 && accountName.length() > 30 && !accountName.matches("[A-Za-z0-9]+"))
 			System.out.println("Please enter valid account name");
 			accountName = getInput();
-		}while(accountName.length() < 3 && accountName.length() > 30 && !accountName.matches("[A-Za-z0-9]+"));
 		// write the new account to the transaction file
-		String userInput = accountNumber + " " + accountName;
+		String userInput = accountNumStr + " " + accountName;
+		accounts.add(new Account(accountNumStr, "0", accountName));
 		writeFile(userInput);
 	}
 
@@ -414,6 +421,7 @@ public class FrontEnd {
 				tran = loginAgent();
 			else
 				tran = loginATM();
+
 			if (tran.equals("a"))
 				deposit();
 			else if (tran.equals("b"))
@@ -422,8 +430,10 @@ public class FrontEnd {
 				transfer();
 			else if (tran.equals("d"))
 				createAcc();
-			else if (tran.equals("e"))
+			else if (tran.equals("e")) {
 				deleteAcc();
+				break;
+			}
 			else
 				logout = true;
 		}
