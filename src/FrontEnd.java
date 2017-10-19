@@ -6,9 +6,13 @@ import java.util.Scanner;
 
 public class FrontEnd {
 
+	/** The account file is stored as an array list of strings, where each string has the form:
+	 * xxxxxxx yyyyyy zzzzzzz
+	 * Where the x's are the account number, the y's are the account value, and the z's are the account name.
+	 **/
+	public static ArrayList<String> accountFile = new ArrayList<>();
 	public static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
-	public static Path outputFilePath;
-	public static String user;
+	public static String user; /* user is "atm" or "agent" */
 
 	/**
 	 * Reads the account file.
@@ -41,6 +45,7 @@ public class FrontEnd {
 			String line;
 			Account account; /* for the account class */
 			while((line = reader.readLine()) != null) {
+				accountFile.add(line);
 				// using the account class:
 				account = new Account(getAccountNumber(line), getAccountValue(line), getAccountName(line));
 				accounts.add(account);
@@ -105,199 +110,311 @@ public class FrontEnd {
 	/**
 	 * Retrieves all the account numbers from the file and wraps them up into an ArrayList of type String.
 	 *
-	 * @return an ArrayList containing all the account numbers from the account file.
+	 * @return a String array containing all the account numbers from the account file.
 	 */
-	private static ArrayList<Integer> getAllAccountNumbers() {
+	private static String[] getAllAccNumStr() {
+		// Using the ArrayList<String> accountFile
+		ArrayList<String> accountNumbersFromString = new ArrayList<>();
+		for (String account : accountFile) {
+			accountNumbersFromString.add(getAccountNumber(account));
+		}
+
 		// Using the ArrayList<Account> accounts
-		ArrayList<Integer> accountNumbers = new ArrayList<>();
+		ArrayList<Integer> accountNumbersFromAccount = new ArrayList<>();
 		for (Account account : accounts) {
-			accountNumbers.add(account.getAccountNumber());
+			accountNumbersFromAccount.add(account.getAccountNumber());
 		}
-		return accountNumbers;
+		String[] accNumString = new String[accountNumbersFromString.size()];
+		for (int i = 0; i < accountNumbersFromString.size(); i++) {
+			accNumString[i] = accountNumbersFromString.get(i);
+		}
+		return accNumString;
 	}
 
-	/**
-	 * Initialized the output file, to be called at the beginning of a session.
-	 */
-	private static void initializeOutputFile() {
-		outputFilePath = FileSystems.getDefault().getPath("output_log");
-	}
-
-	/**
-	 * Writes logs to the output file.
-	 * @param input - the data to be written onto the output file.
-	 */
+	// write the transaction summary file - alex
 	private static void writeFile(String input) {
-		Charset charset = Charset.forName("US-ASCII");
 
-		try (BufferedWriter writer = Files.newBufferedWriter(outputFilePath, charset)) {
-			writer.write(input, 0, input.length());
-		} catch (IOException x) {
-			System.err.format("IOException: %s%n", x);
-		}
 	}
-	
-	// get the console window input
+
+	/**
+	 * Get the user input as text lines.
+	 * And end the program whenever the user types end or END.
+	 * @return the user input
+	 */
 	public static String getInput() {
 		Scanner screen = new Scanner(System.in);
 		String input = screen.nextLine();
+		if (input.equalsIgnoreCase("end")) {
+			writeFile("EOS");
+			System.exit(0);
+		}
 		return input;
 	}
-	
-	// check if the input is good.
-	public static boolean checkInputOK(String input, ArrayList<String> validInput) {
-		boolean inputOk = false;
+
+	/**
+	 * check if a string input is valid
+	 * @param input - the user input
+	 * @param validInput - an array of String, containing all the valid input.
+	 * @return a boolean value showing if the input is valid
+	 */
+	public static boolean checkInputOK(String input, String[] validInput) {
+		boolean inputOK = false;
 		for (String valid : validInput) {
-			if (input.toLowerCase().equals(valid.toLowerCase()))
-				inputOk = true;
+			if (input.equalsIgnoreCase(valid))
+				inputOK = true;
 		}
-		return inputOk;
+		return inputOK;
 	}
-	
-	
-	public static void logout() {
-		
-	}
-	
+
+	/**
+	 * Transfer from an existing account to another existing account.
+	 *
+	 * First read the from and to account name and the amount.
+	 * Then find the from account and check the account has that much money
+	 * Finally find the to account and finish the transferring.
+	 */
 	public static void transfer() {
-		
+		String acc1 = ""; // the from account name
+		String acc2 = ""; // the to account name
+		String amountString = "";
+		String output = ""; // the output to the transaction summary file.
+		double amount = 0.0;
+		// get the from account number, to account number and the amount to withdraw in cents.
+		do {
+			System.out.println("Please enter the from account number: ");
+			acc1 = getInput();
+		} while (!checkInputOK(acc1, getAllAccNumStr()));
+		do {
+			System.out.println("Please enter the to account number: ");
+			acc2 = getInput();
+		} while (!checkInputOK(acc2, getAllAccNumStr()));
+		do { // still need to check if the input is number here
+			System.out.println("Please enter the amount to deposit in cents: ");
+			amountString = getInput();
+			amount =Integer.parseInt(amountString)/100;
+		} while ((user.equalsIgnoreCase("agent") && ((amount > 99999999) || (amount < 0))) ||
+				((user.equalsIgnoreCase("ATM") && ((amount > 100000) || (amount < 0)))));
+		// find the account in the account file and do the withdrawing.
+		for (Account acct : accounts) {
+			if (acct.getAccountNumber() == Integer.parseInt(acc1)) {
+				Double newValue = acct.getAccountValue() - amount;
+				if (newValue < 0) // This account do not have that much money.
+					System.out.println("You only have " + acct.getAccountValue() + "(in cents) in your account.");
+				else {
+					acct.setAccountValue(newValue);
+					output = output + amount + " " + acct.getAccountNumber() + " " + acct.getAccountName();
+				}
+			}
+			if (acct.getAccountNumber() == Integer.parseInt(acc2)) {
+				Double newValue = acct.getAccountValue() + amount;
+				acct.setAccountValue(newValue);
+				output = "XFR " + acct.getAccountNumber() + " " + output;
+				writeFile(output);
+			}
+		}
 	}
-	
+
+	/**
+	 * Withdraw from an existing account.
+	 *
+	 * Get the valid existing account number and the amount.
+	 * Then find the account in the account list and do the withdrawing.
+	 * todo1: for the amount to withdraw, still need to check if the user input only contains digits.
+	 * todo2: when the user cannot withdraw because the amount is not valid, need a exit() method to go back to the previous part.
+	 */
 	public static void withdraw() {
-		
-	}
-	
-	public static void deposit() {
 		String acc = "";
-		ArrayList<String> holderForGetAllAccountNumbers = new ArrayList<>();
+		String amountString = "";
+		double amount = 0;
+		// get the account number and the amount to withdraw in cents.
 		do {
 			System.out.println("Please enter account number: ");
 			acc = getInput();
-		} while (checkInputOK(acc, holderForGetAllAccountNumbers));
-		do { 
+		} while (!checkInputOK(acc, getAllAccNumStr()));
+		do {  // still need to check if the input is number here
 			System.out.println("Please enter the amount to deposit in cents: ");
-			String amountString = getInput();
-		} while (true);
+			amountString = getInput();
+			amount =Integer.parseInt(amountString)/100;
+		} while ((user.equalsIgnoreCase("agent") && ((amount > 99999999) || (amount < 0))) ||
+				((user.equalsIgnoreCase("ATM") && ((amount > 100000) || (amount < 0)))));
+		// find the account in the account file and do the withdrawing.
+		for (Account acct : accounts) {
+			if (acct.getAccountNumber() == Integer.parseInt(acc)) {
+				Double newValue = acct.getAccountValue() - amount;
+				if (newValue < 0) // This account do not have that much money.
+					System.out.println("You only have " + acct.getAccountValue() + " in your account.");
+					// In the ATM session at most $1000 can be withdrawn from a single account.
+				else if (((acct.getTotalWithdraw() + amount) > 100000) && user.equalsIgnoreCase("atm"))
+					System.out.println("a total of at most $1,000 can be withdrawn from a single account in a single ATM session");
+				else {
+					acct.setAccountValue(newValue);
+					writeFile("WDR " + acct.getAccountNumber() + " " + amount + " (none) " + acct.getAccountName());
+				}
+			}
+		}
 	}
-	
-	public static void deleteacc() {
-		
+
+	/**
+	 * Deposit to an existing account.
+	 *
+	 * Get the valid existing account number and the amount
+	 * Then find the account in the account list and do the depositing.
+	 * todo: for the amount to deposit, still need to check if the user input only contains digits.
+	 * @throws Exception
+	 */
+	public static void deposit() throws Exception {
+		String acc = "";
+		String amountString = "";
+		double amount = 0;
+		// get the account number and the amount to deposit in cents.
+		do {
+			System.out.println("Please enter account number: ");
+			acc = getInput();
+		} while (!checkInputOK(acc, getAllAccNumStr()));
+		do {  // still need to check if the input is number here
+			System.out.println("Please enter the amount to deposit in cents: ");
+			amountString = getInput();
+			amount = Integer.parseInt(amountString)/100;
+		} while ((user.equalsIgnoreCase("agent") && ((amount > 99999999) || (amount < 0))) ||
+				((user.equalsIgnoreCase("ATM") && ((amount > 100000) || (amount < 0)))));
+		// find the account and do the depositing.
+		for (Account acct : accounts) {
+			if (acct.getAccountNumber() == Integer.parseInt(acc)) {
+				acct.depositIntoAccount((Double)amount);
+				writeFile("DEP " + acct.getAccountNumber() + " " + amount + " (none) " + acct.getAccountName());
+			}
+		}
+	}
+
+	public static void deleteAcc() {
+
+	}
+
+	/**
+	 * check it a new account number is different than all accounts
+	 * @param the new account number in string
+	 * @return a boolwan showing if it is valid.
+	 */
+	public static boolean newAcctOK(String newAcct) {
+		String[] existingAcct = getAllAccNumStr();
+		for (String acc : existingAcct) {
+			if (newAcct.equals(acc))
+				return false;
+		}
+		return true;
+
 	}
 
 	//todo: if you like the account class, create a new account with this method and then add to the list of accounts
 	public static void createAcc() {
-		if (user == "agent") {
-			/*-----Getting account Number and checking for validity -----*/ //STILL NEED TO CHECK ACC NUM IS DIFFERENT THAN ALL ACCOUNTS
-			System.out.println("Please type in account number 7 digits long not starting with 0");
-			String accountNumStr = getInput(); //get the account number
-			int accountNumber =Integer.parseInt(accountNumStr); // convert to integer
-			do {
-				System.out.println("Please enter valid account number");
-				accountNumStr = getInput();
-				accountNumber = Integer.parseInt(accountNumStr);	
-			} while(String.valueOf(Math.abs((long)accountNumber)).charAt(0) == '0' || String.valueOf(accountNumber).length() != 7);
-	
-			/*-----Getting account Name and checking for validity -----*/
-			System.out.println("Please enter account name between 3 and 30 alphanumeric digits");
-			String accountName = getInput(); //get the account name
-			do {
-				System.out.println("Please enter valid account name");
-				accountName = getInput();
-			}while(accountName.length() < 3 && accountName.length() > 30 && !accountName.matches("[A-Za-z0-9]+"));
+		/*-----Getting account Number and checking for validity -----*/ //STILL NEED TO CHECK ACC NUM IS DIFFERENT THAN ALL ACCOUNTS
+		System.out.println("Please type in account number 7 digits long not starting with 0");
+		String accountNumStr = getInput(); //get the account number
+		int accountNumber =Integer.parseInt(accountNumStr); // convert to integer
+		do {
+			System.out.println("Please enter valid account number");
+			accountNumStr = getInput();
+			accountNumber = Integer.parseInt(accountNumStr);
+		} while(String.valueOf(Math.abs((long)accountNumber)).charAt(0) == '0' || String.valueOf(accountNumber).length() != 7 || !newAcctOK(accountNumStr));
 
-			// write the new account to the transaction file
-			String userInput = accountNumber + " " + accountName;
-			writeFile(userInput);
-		} else {
-			System.out.println("Can't create an account if you're not an agent");
-			return;
-		}
+		/*-----Getting account Name and checking for validity -----*/
+		System.out.println("Please enter account name between 3 and 30 alphanumeric digits");
+		String accountName = getInput(); //get the account name
+		do {
+			System.out.println("Please enter valid account name");
+			accountName = getInput();
+		}while(accountName.length() < 3 && accountName.length() > 30 && !accountName.matches("[A-Za-z0-9]+"));
+		// write the new account to the transaction file
+		String userInput = accountNumber + " " + accountName;
+		writeFile(userInput);
 	}
-	
-	// show the prompt when the user is an agent an get the transaction
+
+	/**
+	 * show the prompt when the user is an agent and get the transaction
+	 * @return the valid user input
+	 */
 	public static String loginAgent() {
 		System.out.println("Please select a transaction");
-		System.out.println("A. creating a new account");
-		System.out.println("B. delete an existing account");
-		System.out.println("C. deposit to an account");
-		System.out.println("D. withdraw from an account");
-		System.out.println("E. transfer from one account to another");
-		String input = "";
-		ArrayList<String> options = new ArrayList<>();
-		options.add("A");
-		options.add("B");
-		options.add("C");
-		options.add("D");
-		options.add("E");
-		do {
-			System.out.println("Please enter the letter: ");
-			input = getInput();
-		} while (checkInputOK(input, options));
-		return input.toLowerCase();
-	}
-	
-	public static String loginATM() {
-		System.out.println("Please select a transaction and enter the letter: ");
 		System.out.println("A. deposit to an account");
 		System.out.println("B. withdraw from an account");
 		System.out.println("C. transfer from one account to another");
-		String input = "";
-
-		// How to initialize an ArrayList
-		ArrayList<String> arrayList = new ArrayList<>();
-		arrayList.add("A");
-		arrayList.add("B");
-		arrayList.add("C");
-
+		System.out.println("D. creating a new account");
+		System.out.println("E. delete an existing account");
+		String input;
+		String[] validInput = {"A", "B", "C", "D", "E"};
 		do {
 			System.out.println("Please enter the letter: ");
 			input = getInput();
-		} while (checkInputOK(input, arrayList));
+		} while (!checkInputOK(input, validInput));
 		return input.toLowerCase();
 	}
-	
-	// get the user, get the transaction and call the other transaction
-	public static void login() {
-		String tran = "";
-		ArrayList<String> arrayList = new ArrayList<>();
-		arrayList.add("ATM");
-		arrayList.add("agent");
+
+	/**
+	 * show the prompt when the user is an ATM and get the transaction
+	 * @return the valid user input
+	 */
+	public static String loginATM() {
+		System.out.println("Please select a transaction or type logout: ");
+		System.out.println("A. deposit to an account");
+		System.out.println("B. withdraw from an account");
+		System.out.println("C. transfer from one account to another");
+		String input;
+		String[] validInput = {"A", "B", "C", "logout"};
 		do {
-			System.out.println("Login as: \"ATM\" or \"agent\")");
-			user = getInput();
-		} while (checkInputOK(user, arrayList));
-		if (user.equals("agent")) 
-			tran = loginAgent();
-		else
-			tran = loginATM();
-		if (tran.equals("a"))
-			createAcc();
-		else if (tran.equals("b"))
-			deleteacc();
-		else if (tran.equals("c"))
-			deposit();
-		else if (tran.equals("d"))
-			withdraw();
-		else
-			transfer();
+			System.out.println("Please enter the letter or type logout: ");
+			input = getInput();
+		} while (!checkInputOK(input, validInput));
+		return input.toLowerCase();
 	}
-	
-	// show the welcome message, read the account file 
-	// get the login input and call the login method.
-	public static void main(String[] args) {
-		// use sessionCurrent for the exit() method
-		Boolean sessionCurrent = true;
-		while (sessionCurrent) {
-			System.out.println("Welcome to QBASIC");
-			boolean inputOK = false;
+
+	/**
+	 * get the user, get the transaction and call the other transaction
+	 * @throws Exception
+	 */
+	public static void login() throws Exception {
+		Boolean logout = false;
+		String[] validInput = {"ATM", "agent"};
+		do {
+			System.out.println("Login as: \"ATM\" or \"agent\"");
+			user = getInput().toLowerCase();
+		} while (!checkInputOK(user, validInput));
+		while (!logout) {
+			String tran;
+			if (user.equals("agent"))
+				tran = loginAgent();
+			else
+				tran = loginATM();
+			if (tran.equals("a"))
+				deposit();
+			else if (tran.equals("b"))
+				withdraw();
+			else if (tran.equals("c"))
+				transfer();
+			else if (tran.equals("d"))
+				createAcc();
+			else if (tran.equals("e"))
+				deleteAcc();
+			else
+				logout = true;
+		}
+	}
+
+	/**
+	 * show the welcome message and read the account file
+	 * get the login input and call the login method.
+	 * @throws Exception
+	 */
+	public static void main(String[] args) throws Exception {
+		readFile();
+		while (true) {
+			System.out.println("Welcome to QBASIC.");
+			String input;
+			String[] validInput = {"login"};
 			do {
 				System.out.println("please type login");
-				String input = getInput();
-				if (input.equals("login"))
-					inputOK = true;
-			} while (!inputOK);
+				input = getInput();
+			} while (!checkInputOK(input, validInput));
 			login();
-			readFile();
 		}
 	}
 }

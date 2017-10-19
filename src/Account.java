@@ -6,6 +6,7 @@ public class Account {
     private Integer accountNumber;
     private Double accountValue;
     private String accountName;
+    private Double totalWithdraw;
 
     Account(String number, String value, String name) {
         try {
@@ -15,6 +16,10 @@ public class Account {
         } catch (Exception e) {
             System.out.println("There was an error with the account information provided.");
         }
+    }
+
+    Double getTotalWithdraw() {
+        return this.totalWithdraw;
     }
 
     Integer getAccountNumber() {
@@ -33,24 +38,24 @@ public class Account {
         return this.accountName;
     }
 
-    void withdrawFromAccount(Account account, Double value) throws Exception {
-        Double newValue = account.getAccountValue() - value;
+    void withdrawFromAccount(Double value) throws Exception {
+        Double newValue = this.getAccountValue() - value;
         if (newValue < 0) {
             throw new Exception("Withdrawal exceeds available amount.");
         } else {
-            account.setAccountValue(newValue);
+            this.setAccountValue(newValue);
         }
     }
 
-    void depositIntoAccount(Account account, Double value) throws Exception {
-        Double newValue = account.getAccountValue() + value;
-        account.setAccountValue(newValue);
+    void depositIntoAccount(Double value) throws Exception {
+        Double newValue = this.getAccountValue() + value;
+        this.setAccountValue(newValue);
     }
 
     void transferToAccount(Account account, Double value) throws Exception {
         try {
-            withdrawFromAccount(account, value);
-            depositIntoAccount(this, value);
+            withdrawFromAccount(value);
+            depositIntoAccount(value);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
@@ -58,8 +63,8 @@ public class Account {
 
     void transferFromAccount(Account account, Double value) throws Exception {
         try {
-            withdrawFromAccount(this, value);
-            depositIntoAccount(account, value);
+            withdrawFromAccount(value);
+            depositIntoAccount(value);
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
