@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d939fa32-52b1-467d-b578-81ce45095df7" name="Default" comment="closed scanner once string is read">
-<<<<<<< Updated upstream
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/UserType.java" />
-=======
+
       <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/MasterAccountFileValid.txt" />
->>>>>>> Stashed changes
+
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/FrontEnd.java" afterPath="$PROJECT_DIR$/src/FrontEnd.java" />
     </list>
@@ -26,13 +25,13 @@
       <file leaf-file-name="FrontEnd.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/FrontEnd.java">
           <provider selected="true" editor-type-id="text-editor">
-<<<<<<< Updated upstream
+
             <state relative-caret-position="279">
               <caret line="262" column="45" lean-forward="true" selection-start-line="262" selection-start-column="18" selection-end-line="262" selection-end-column="45" />
-=======
+            </state>
             <state relative-caret-position="451">
               <caret line="429" column="0" lean-forward="true" selection-start-line="429" selection-start-column="0" selection-end-line="429" selection-end-column="0" />
->>>>>>> Stashed changes
+
               <folding />
             </state>
           </provider>
@@ -85,10 +84,9 @@
       <list>
         <option value="$PROJECT_DIR$/src/Account.java" />
         <option value="$PROJECT_DIR$/.idea/workspace.xml" />
-<<<<<<< Updated upstream
+
         <option value="$PROJECT_DIR$/src/UserType.java" />
-=======
->>>>>>> Stashed changes
+
         <option value="$PROJECT_DIR$/src/FrontEnd.java" />
       </list>
     </option>
@@ -122,7 +120,6 @@
       <pane id="AndroidView" />
       <pane id="ProjectPane">
         <subPane>
-<<<<<<< Updated upstream
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="CISC327" />
@@ -161,7 +158,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-=======
+
           <expand>
             <path>
               <item name="CISC327" type="b2602c69:ProjectViewProjectNode" />
@@ -174,7 +171,7 @@
             </path>
           </expand>
           <select />
->>>>>>> Stashed changes
+
         </subPane>
       </pane>
       <pane id="Scope" />
@@ -961,13 +958,13 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/FrontEnd.java">
       <provider selected="true" editor-type-id="text-editor">
-<<<<<<< Updated upstream
+
         <state relative-caret-position="279">
           <caret line="262" column="45" lean-forward="true" selection-start-line="262" selection-start-column="18" selection-end-line="262" selection-end-column="45" />
-=======
+        </state>
         <state relative-caret-position="451">
           <caret line="429" column="0" lean-forward="true" selection-start-line="429" selection-start-column="0" selection-end-line="429" selection-end-column="0" />
->>>>>>> Stashed changes
+
           <folding />
         </state>
       </provider>
