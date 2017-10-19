@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d939fa32-52b1-467d-b578-81ce45095df7" name="Default" comment="closed scanner once string is read">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/UserType.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/FrontEnd.java" afterPath="$PROJECT_DIR$/src/FrontEnd.java" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,12 +20,25 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="FrontEnd.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="FrontEnd.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/FrontEnd.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="336">
-              <caret line="424" column="16" lean-forward="true" selection-start-line="424" selection-start-column="16" selection-end-line="424" selection-end-column="16" />
+            <state relative-caret-position="279">
+              <caret line="262" column="45" lean-forward="true" selection-start-line="262" selection-start-column="18" selection-end-line="262" selection-end-column="45" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="UserType.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/UserType.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="351">
+              <caret line="25" column="25" lean-forward="true" selection-start-line="25" selection-start-column="25" selection-end-line="25" selection-end-column="25" />
+              <folding>
+                <element signature="e#352#353#0" expanded="true" />
+                <element signature="e#390#391#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -44,6 +59,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -60,8 +76,9 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/Account.java" />
-        <option value="$PROJECT_DIR$/src/FrontEnd.java" />
         <option value="$PROJECT_DIR$/.idea/workspace.xml" />
+        <option value="$PROJECT_DIR$/src/UserType.java" />
+        <option value="$PROJECT_DIR$/src/FrontEnd.java" />
       </list>
     </option>
   </component>
@@ -101,6 +118,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="CISC327" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CISC327" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CISC327" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -640,7 +671,7 @@
       <workItem from="1508265153075" duration="5369000" />
       <workItem from="1508348259901" duration="2052000" />
       <workItem from="1508372787155" duration="127000" />
-      <workItem from="1508374213539" duration="100000" />
+      <workItem from="1508374213539" duration="1908000" />
     </task>
     <task id="LOCAL-00001" summary="added my name to the methods i'll write">
       <created>1508247734058</created>
@@ -660,7 +691,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13509000" />
+    <option name="totallyTimeSpent" value="15317000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="24" width="1680" height="951" extended-state="6" />
@@ -893,9 +924,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/FrontEnd.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="336">
-          <caret line="424" column="16" lean-forward="true" selection-start-line="424" selection-start-column="16" selection-end-line="424" selection-end-column="16" />
+        <state relative-caret-position="279">
+          <caret line="262" column="45" lean-forward="true" selection-start-line="262" selection-start-column="18" selection-end-line="262" selection-end-column="45" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/UserType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="351">
+          <caret line="25" column="25" lean-forward="true" selection-start-line="25" selection-start-column="25" selection-end-line="25" selection-end-column="25" />
+          <folding>
+            <element signature="e#352#353#0" expanded="true" />
+            <element signature="e#390#391#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

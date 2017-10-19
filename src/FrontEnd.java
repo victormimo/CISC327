@@ -12,7 +12,7 @@ public class FrontEnd {
 	 **/
 	public static ArrayList<String> accountFile = new ArrayList<>();
 	public static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
-	public static String user; /* user is "atm" or "agent" */
+	public static UserType user; /* user is "atm" or "agent" */
 
 	/**
 	 * Reads the account file.
@@ -177,8 +177,8 @@ public class FrontEnd {
 			System.out.println("Please enter the amount to deposit in cents: ");
 			amountString = getInput();
 			amount =Integer.parseInt(amountString)/100;
-		} while ((user.equalsIgnoreCase("agent") && ((amount > 99999999) || (amount < 0))) ||
-				((user.equalsIgnoreCase("ATM") && ((amount > 100000) || (amount < 0)))));
+		} while ((UserType.AGENT.equals(user) && ((amount > 99999999) || (amount < 0))) ||
+				((UserType.ATM.equals(user) && ((amount > 100000) || (amount < 0)))));
 		// find the account in the account file and do the withdrawing.
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(acc1)) {
@@ -220,8 +220,8 @@ public class FrontEnd {
 			System.out.println("Please enter the amount to deposit in cents: ");
 			amountString = getInput();
 			amount =Integer.parseInt(amountString)/100;
-		} while ((user.equalsIgnoreCase("agent") && ((amount > 99999999) || (amount < 0))) ||
-				((user.equalsIgnoreCase("ATM") && ((amount > 100000) || (amount < 0)))));
+		} while ((UserType.AGENT.equals(user)&& ((amount > 99999999) || (amount < 0))) ||
+				((UserType.ATM.equals(user) && ((amount > 100000) || (amount < 0)))));
 		// find the account in the account file and do the withdrawing.
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(acc)) {
@@ -229,7 +229,7 @@ public class FrontEnd {
 				if (newValue < 0) // This account do not have that much money.
 					System.out.println("You only have " + acct.getAccountValue() + " in your account.");
 					// In the ATM session at most $1000 can be withdrawn from a single account.
-				else if (((acct.getTotalWithdraw() + amount) > 100000) && user.equalsIgnoreCase("atm"))
+				else if (((acct.getTotalWithdraw() + amount) > 100000) && UserType.ATM.equals(user))
 					System.out.println("a total of at most $1,000 can be withdrawn from a single account in a single ATM session");
 				else {
 					acct.setAccountValue(newValue);
@@ -260,8 +260,8 @@ public class FrontEnd {
 			System.out.println("Please enter the amount to deposit in cents: ");
 			amountString = getInput();
 			amount = Integer.parseInt(amountString)/100;
-		} while ((user.equalsIgnoreCase("agent") && ((amount > 99999999) || (amount < 0))) ||
-				((user.equalsIgnoreCase("ATM") && ((amount > 100000) || (amount < 0)))));
+		} while ((UserType.AGENT.equals(user) && ((amount > 99999999) || (amount < 0))) ||
+				((UserType.ATM.equals(user) && ((amount > 100000) || (amount < 0)))));
 		// find the account and do the depositing.
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(acc)) {
@@ -292,7 +292,7 @@ public class FrontEnd {
 
 	/**
 	 * check it a new account number is different than all accounts
-	 * @param the new account number in string
+	 * @param newAcct - the new account number in string
 	 * @return a boolwan showing if it is valid.
 	 */
 	public static boolean newAcctOK(String newAcct) {
@@ -374,10 +374,15 @@ public class FrontEnd {
 	public static void login() throws Exception {
 		Boolean logout = false;
 		String[] validInput = {"ATM","atm", "agent"};
+		String userInput;
 		do {
 			System.out.println("Please login as: \"ATM\" or \"agent\"");
-			user = getInput().toLowerCase();
-		} while (!checkInputOK(user, validInput));
+			userInput = getInput().toLowerCase();
+			if (userInput.equalsIgnoreCase("agent"))
+				user = UserType.AGENT;
+			else if (userInput.equalsIgnoreCase("atm"))
+				user = UserType.ATM;
+		} while (!checkInputOK(userInput, validInput));
 		while (!logout) {
 			String tran;
 			if (user.equals("agent"))
