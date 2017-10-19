@@ -131,11 +131,6 @@ public class FrontEnd {
 	private static void initializeLogFile() {
 	    try {
 	        logFile = new PrintWriter("transaction-log.txt", "UTF-8");
-	        if (user != null) {
-                writeFile("Session initiated with user type: " + user.getName());
-            } else {
-	            writeFile("Session initiated.");
-            }
         } catch (IOException e) {
             System.out.println("Error creating log file.");
             System.exit(1);
@@ -156,12 +151,53 @@ public class FrontEnd {
      * @param input - the entry to the log file.
      */
 	private static void writeFile(String input) {
-        try {
-            logFile.println(input);
-        } catch (NullPointerException e) {
-            System.out.println("Log file not initialized.");
-        }
-	}
+		// make sure line is less than 61 characters long (including new line character)
+		if (input.length() > 60) {
+			System.out.println("Transaction file line too long.");
+			return;
+		}
+
+		// make sure the string is in the right format:
+		// CCC AAAA MMMM BBBB NNNN
+		String[] split = input.split("\\s+");
+
+		// make sure the transaction code is correct
+		String[] validTransactionCode = {"DEP", "WDR", "XFR", "NEW", "DEL", "EOS"};
+		if (!checkInputOK(split[0], validTransactionCode)) {
+			System.out.println("Incorrect transmission code.");
+			return;
+		}
+
+		// make sure the account number is the in the correct form
+		if (split[1].length() != 7) {
+			System.out.println("Account number provided to the log file is incorrect.");
+			return;
+		}
+
+		// make sure the amount is between 3 and 8 decimal digits
+		if (split[2].length() > 8 || split[2].length() < 3) {
+			System.out.println("Value provided to log is the incorrect amount.");
+			return;
+		}
+
+		// re-build account name and check that it is between 3 and 30 characters long
+		String accountName = "";
+		for (int i = 0; i < split.length - 4; i++) {
+			accountName += split[4+i];
+		}
+		if (accountName.length() < 3 || accountName.length() > 30) {
+			System.out.println("Account name provided to log file is too long.");
+			return;
+		}
+
+			try {
+				// write to file
+				logFile.println(input);
+			} catch (NullPointerException e) {
+				System.out.println("Log file not initialized.");
+			}
+		}
+
 
 	/**
 	 * Get the user input as text lines.
@@ -309,11 +345,13 @@ public class FrontEnd {
 			accNumber = getInput();
 		}
 
+		Account accountToDelete = null;
 		for(Account account : accounts){
 			if (account.getAccountNumber().equals(accNumber))
 				writeFile("DEL " + account.getAccountNumber() + " " + account.getAccountValue() + " " + account.getAccountName());
-				accounts.remove(account);
+				accountToDelete = account;
 			}
+			accounts.remove(accountToDelete);
 
 	}
 
