@@ -152,21 +152,6 @@ public class FrontEnd {
 	}
 
 	/**
-	 * check if a string input is valid
-	 * @param input - the user input
-	 * @param validInput - an array of String, containing all the valid input.
-	 * @return a boolean value showing if the input is valid
-	 */
-	public static boolean checkInputOK(String input, String[] validInput) {
-		boolean inputOK = false;
-		for (String valid : validInput) {
-			if (input.equalsIgnoreCase(valid))
-				inputOK = true;
-		}
-		return inputOK;
-	}
-
-	/**
 	 * Transfer from an existing account to another existing account.
 	 *
 	 * First read the from and to account name and the amount.
@@ -287,6 +272,21 @@ public class FrontEnd {
 	}
 
 	public static void deleteAcc() {
+		System.out.println("Please enter the account number you wish to delete");
+		String accNumber = getInput();
+
+
+
+
+
+
+		String accName = getInput();
+
+
+
+
+
+
 
 	}
 
@@ -373,9 +373,9 @@ public class FrontEnd {
 	 */
 	public static void login() throws Exception {
 		Boolean logout = false;
-		String[] validInput = {"ATM", "agent"};
+		String[] validInput = {"ATM","atm", "agent"};
 		do {
-			System.out.println("Login as: \"ATM\" or \"agent\"");
+			System.out.println("Please login as: \"ATM\" or \"agent\"");
 			user = getInput().toLowerCase();
 		} while (!checkInputOK(user, validInput));
 		while (!logout) {
@@ -400,21 +400,29 @@ public class FrontEnd {
 	}
 
 	/**
+	 * check if a string input is valid
+	 * @param input - the user input
+	 * @param validInput - an array of String, containing all the valid input.
+	 * @return a boolean value showing if the input is valid
+	 */
+	public static boolean checkInputOK(String input, String[] validInput) {
+		boolean inputOK = false;
+		for (String valid : validInput) {
+			if (input.equalsIgnoreCase(valid))
+				inputOK = true;
+		}
+		return inputOK;
+	}
+
+	/**
 	 * show the welcome message and read the account file
 	 * get the login input and call the login method.
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
 		readFile();
-		while (true) {
-			System.out.println("Welcome to QBASIC.");
-			String input;
-			String[] validInput = {"login"};
-			do {
-				System.out.println("please type login");
-				input = getInput();
-			} while (!checkInputOK(input, validInput));
-			login();
-		}
+		System.out.println("Welcome to QBASIC.");
+		login();
+
 	}
 }
