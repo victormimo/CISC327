@@ -24,10 +24,10 @@ public class FrontEnd {
 	 */
 	private static void readFile() {
 		// request file path from console
-		System.out.println("Please enter the path of the account list file.");
+		//System.out.println("Please enter the path of the account list file.");
 		try {
 			// use the file path from the user to get the file
-			String pathFromUser = getInput();
+			String pathFromUser = "/MasterAccountFileValid.txt";
 			Path path = FileSystems.getDefault().getPath(pathFromUser);
 			File file = new File(pathFromUser); /* used to determine that there is a file at that path */
 
@@ -373,6 +373,7 @@ public class FrontEnd {
 	 */
 	public static void login() throws Exception {
 		Boolean logout = false;
+<<<<<<< Updated upstream
 		String[] validInput = {"ATM","atm", "agent"};
 		String userInput;
 		do {
@@ -383,6 +384,14 @@ public class FrontEnd {
 			else if (userInput.equalsIgnoreCase("atm"))
 				user = UserType.ATM;
 		} while (!checkInputOK(userInput, validInput));
+=======
+		String[] validInput = {"machine", "agent"};
+		do {
+			System.out.println("Please login as: machine or agent");
+			user = getInput();
+		} while (!checkInputOK(user, validInput));
+		readFile();
+>>>>>>> Stashed changes
 		while (!logout) {
 			String tran;
 			if (user.equals("agent"))
@@ -425,7 +434,7 @@ public class FrontEnd {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-		readFile();
+
 		System.out.println("Welcome to QBASIC.");
 		login();
 
