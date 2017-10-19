@@ -373,25 +373,17 @@ public class FrontEnd {
 	 */
 	public static void login() throws Exception {
 		Boolean logout = false;
-<<<<<<< Updated upstream
-		String[] validInput = {"ATM","atm", "agent"};
 		String userInput;
+		String[] validInput = {"machine", "agent"};
 		do {
-			System.out.println("Please login as: \"ATM\" or \"agent\"");
+			System.out.println("Please login as: machine or agent");
 			userInput = getInput().toLowerCase();
 			if (userInput.equalsIgnoreCase("agent"))
 				user = UserType.AGENT;
 			else if (userInput.equalsIgnoreCase("atm"))
 				user = UserType.ATM;
 		} while (!checkInputOK(userInput, validInput));
-=======
-		String[] validInput = {"machine", "agent"};
-		do {
-			System.out.println("Please login as: machine or agent");
-			user = getInput();
-		} while (!checkInputOK(user, validInput));
 		readFile();
->>>>>>> Stashed changes
 		while (!logout) {
 			String tran;
 			if (user.equals("agent"))
