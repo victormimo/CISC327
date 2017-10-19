@@ -6,13 +6,9 @@ import java.util.Scanner;
 
 public class FrontEnd {
 
-	/** The account file is stored as an array list of strings, where each string has the form:
-	 * xxxxxxx yyyyyy zzzzzzz
-	 * Where the x's are the account number, the y's are the account value, and the z's are the account name.
-	 **/
-	public static ArrayList<String> accountFile = new ArrayList<>();
 	public static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
 	public static UserType user; /* user is "atm" or "agent" */
+    public static PrintWriter logFile; /* the log file for all transactions */
 
 	/**
 	 * Reads the account file.
@@ -45,7 +41,6 @@ public class FrontEnd {
 			String line;
 			Account account; /* for the account class */
 			while((line = reader.readLine()) != null) {
-				accountFile.add(line);
 				// using the account class:
 				account = new Account(getAccountNumber(line), getAccountValue(line), getAccountName(line));
 				accounts.add(account);
@@ -113,27 +108,50 @@ public class FrontEnd {
 	 * @return a String array containing all the account numbers from the account file.
 	 */
 	private static String[] getAllAccNumStr() {
-		// Using the ArrayList<String> accountFile
-		ArrayList<String> accountNumbersFromString = new ArrayList<>();
-		for (String account : accountFile) {
-			accountNumbersFromString.add(getAccountNumber(account));
-		}
-
-		// Using the ArrayList<Account> accounts
+        // Using the ArrayList<Account> accounts
 		ArrayList<Integer> accountNumbersFromAccount = new ArrayList<>();
 		for (Account account : accounts) {
 			accountNumbersFromAccount.add(account.getAccountNumber());
 		}
-		String[] accNumString = new String[accountNumbersFromString.size()];
-		for (int i = 0; i < accountNumbersFromString.size(); i++) {
-			accNumString[i] = accountNumbersFromString.get(i);
+		String[] accNumString = new String[accountNumbersFromAccount.size()];
+		for (int i = 0; i < accountNumbersFromAccount.size(); i++) {
+			accNumString[i] = accountNumbersFromAccount.get(i).toString();
 		}
 		return accNumString;
 	}
 
-	// write the transaction summary file - alex
-	private static void writeFile(String input) {
+    /**
+     * Called when a user successfully logs into the program. Initializes the global log file.
+     * Overwrites any pre-existing log file which has the same filename (filename is hardcoded so the log file is
+     * re-written every time the program runs).
+     */
+	private static void initializeLogFile() {
+	    try {
+	        logFile = new PrintWriter("transaction-log.txt", "UTF-8");
+        } catch (IOException e) {
+            System.out.println("Error creating log file.");
+            System.exit(1);
+        }
+    }
 
+    /**
+     * Called when the program is closed, to close the log file.
+     */
+    private static void closeLogFile() {
+        logFile.close();
+    }
+
+    /**
+     * Called whenever something needs to be written to the log file.
+     *
+     * @param input - the entry to the log file.
+     */
+	private static void writeFile(String input) {
+        try {
+            logFile.println(input);
+        } catch (NullPointerException e) {
+            System.out.println("Log file not initialized.");
+        }
 	}
 
 	/**
@@ -428,7 +446,9 @@ public class FrontEnd {
 	public static void main(String[] args) throws Exception {
 
 		System.out.println("Welcome to QBASIC.");
-		login();
+		//login();
+
+        writeFile("xyz");
 
 	}
 }
