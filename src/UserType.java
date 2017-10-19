@@ -19,6 +19,8 @@ public enum UserType {
         return this.userTypeID;
     }
 
+    public String getName() { return this.userTypeName; }
+
     public boolean equals(UserType user) {
         if (userTypeID == user.getID())
             return true;

@@ -110,7 +110,6 @@ public class FrontEnd {
 	 */
 	private static String[] getAllAccNumStr() {
 
-        // Using the ArrayList<Account> accounts
 		ArrayList<Integer> accountNumbersFromAccount = new ArrayList<>();
 
 		for (Account account : accounts) {
@@ -132,6 +131,11 @@ public class FrontEnd {
 	private static void initializeLogFile() {
 	    try {
 	        logFile = new PrintWriter("transaction-log.txt", "UTF-8");
+	        if (user != null) {
+                writeFile("Session initiated with user type: " + user.getName());
+            } else {
+	            writeFile("Session initiated.");
+            }
         } catch (IOException e) {
             System.out.println("Error creating log file.");
             System.exit(1);
@@ -142,6 +146,7 @@ public class FrontEnd {
      * Called when the program is closed, to close the log file.
      */
     private static void closeLogFile() {
+        writeFile("Session closed.");
         logFile.close();
     }
 
@@ -405,7 +410,7 @@ public class FrontEnd {
 			userInput = getInput().toLowerCase();
 			if (userInput.equalsIgnoreCase("agent"))
 				user = UserType.AGENT;
-			else if (userInput.equalsIgnoreCase("atm"))
+			else if (userInput.equalsIgnoreCase("machine"))
 				user = UserType.ATM;
 		} while (!checkInputOK(userInput, validInput));
 
