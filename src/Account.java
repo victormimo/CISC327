@@ -6,7 +6,6 @@ public class Account {
     private Integer accountNumber;
     private Double accountValue;
     private String accountName;
-    private Double totalWithdraw;
 
     Account(String number, String value, String name) {
         try {
@@ -16,10 +15,6 @@ public class Account {
         } catch (Exception e) {
             System.out.println("There was an error with the account information provided.");
         }
-    }
-
-    Double getTotalWithdraw() {
-        return this.totalWithdraw;
     }
 
     Integer getAccountNumber() {
@@ -50,24 +45,6 @@ public class Account {
     void depositIntoAccount(Double value) throws Exception {
         Double newValue = this.getAccountValue() + value;
         this.setAccountValue(newValue);
-    }
-
-    void transferToAccount(Account account, Double value) throws Exception {
-        try {
-            withdrawFromAccount(value);
-            depositIntoAccount(value);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    void transferFromAccount(Account account, Double value) throws Exception {
-        try {
-            withdrawFromAccount(value);
-            depositIntoAccount(value);
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
     }
 
 }

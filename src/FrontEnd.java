@@ -146,7 +146,7 @@ public class FrontEnd {
      * Called when the program is closed, to close the log file.
      */
     private static void closeLogFile() {
-        writeFile("Session closed.");
+        writeFile("EOS");
         logFile.close();
     }
 
@@ -172,7 +172,7 @@ public class FrontEnd {
 		Scanner screen = new Scanner(System.in);
 		String input = screen.nextLine();
 		if (input.equalsIgnoreCase("end")) {
-			writeFile("EOS");
+			closeLogFile();
 			System.exit(0);
 		}
 		return input;
@@ -244,7 +244,7 @@ public class FrontEnd {
 			acc = getInput();
 		} while (!checkInputOK(acc, getAllAccNumStr()));
 		do {  // still need to check if the input is number here
-			System.out.println("Please enter the amount to deposit in cents: ");
+			System.out.println("Please enter the amount to withdraw in cents: ");
 			amountString = getInput();
 			amount =Integer.parseInt(amountString)/100;
 		} while ((UserType.AGENT.equals(user)&& ((amount > 99999999) || (amount < 0))) ||
@@ -256,7 +256,7 @@ public class FrontEnd {
 				if (newValue < 0) // This account do not have that much money.
 					System.out.println("You only have " + acct.getAccountValue() + " in your account.");
 					// In the ATM session at most $1000 can be withdrawn from a single account.
-				else if (((acct.getTotalWithdraw() + amount) > 100000) && UserType.ATM.equals(user))
+				else if (((acct.getAccountValue() + amount) > 100000) && UserType.ATM.equals(user))
 					System.out.println("a total of at most $1,000 can be withdrawn from a single account in a single ATM session");
 				else {
 					acct.setAccountValue(newValue);
