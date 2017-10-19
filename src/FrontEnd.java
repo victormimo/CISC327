@@ -311,6 +311,7 @@ public class FrontEnd {
 
 		for(Account account : accounts){
 			if (account.getAccountNumber().equals(accNumber))
+				writeFile("DEL " + account.getAccountNumber() + " " + account.getAccountValue() + " " + account.getAccountName());
 				accounts.remove(account);
 			}
 
@@ -356,7 +357,7 @@ public class FrontEnd {
 		// write the new account to the transaction file
 		String userInput = accountNumStr + " " + accountName;
 		accounts.add(new Account(accountNumStr, "0", accountName));
-		writeFile(userInput);
+		writeFile("NEW " + accountNumStr + " 0 " + accountName);
 	}
 
 	/**
