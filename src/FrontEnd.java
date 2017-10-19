@@ -401,7 +401,13 @@ public class FrontEnd {
 			else if (userInput.equalsIgnoreCase("atm"))
 				user = UserType.ATM;
 		} while (!checkInputOK(userInput, validInput));
+
+		// call initializeLogFile as soon as user successfully logs in
+		initializeLogFile();
+
+		// read the master account file
 		readFile();
+
 		while (!logout) {
 			String tran;
 			if (UserType.AGENT.equals(user))
@@ -421,6 +427,9 @@ public class FrontEnd {
 			else
 				logout = true;
 		}
+
+		// close the log file when the user logs out
+        closeLogFile();
 	}
 
 	/**
