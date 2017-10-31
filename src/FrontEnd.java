@@ -525,5 +525,7 @@ public class FrontEnd {
 		System.out.println("Welcome to QBASIC.");
 		login();
 
+		System.out.println("Hello");
+
 	}
 }
