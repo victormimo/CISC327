@@ -326,8 +326,8 @@ public class FrontEnd {
 			System.out.println("Please enter the amount to deposit in cents: ");
 			amountString = getInput();
 			amount = Integer.parseInt(amountString)/100;
-		} while ((UserType.AGENT.equals(user) && ((amount > 99999999) || (amount < 0))) ||
-				((UserType.ATM.equals(user) && ((amount > 100000) || (amount < 0)))));
+		} while ((UserType.AGENT.equals(user) && ((amount > 999999) || (amount < 0))) ||
+				((UserType.ATM.equals(user) && ((amount > 1000) || (amount < 0)))));
 		// find the account and do the depositing.
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(acc)) {
@@ -525,7 +525,6 @@ public class FrontEnd {
 		System.out.println("Welcome to QBASIC.");
 		login();
 
-		System.out.println("Hello");
 
 	}
 }
