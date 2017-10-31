@@ -169,25 +169,27 @@ public class FrontEnd {
 		}
 
 		// make sure the account number is the in the correct form
-		if (split[1].length() != 7) {
-			System.out.println("Account number provided to the log file is incorrect.");
-			return;
-		}
+		if (split.length > 1) {
+			if (split[1].length() != 7) {
+				System.out.println("Account number provided to the log file is incorrect.");
+				return;
+			}
 
-		// make sure the amount is between 3 and 8 decimal digits
-		if (split[2].length() > 8 || split[2].length() < 3) {
-			System.out.println("Value provided to log is the incorrect amount.");
-			return;
-		}
+			// make sure the amount is between 3 and 8 decimal digits
+			if (split[2].length() > 8 || split[2].length() < 3) {
+				System.out.println("Value provided to log is the incorrect amount.");
+				return;
+			}
 
-		// re-build account name and check that it is between 3 and 30 characters long
-		String accountName = "";
-		for (int i = 0; i < split.length - 4; i++) {
-			accountName += split[4+i];
-		}
-		if (accountName.length() < 3 || accountName.length() > 30) {
-			System.out.println("Account name provided to log file is too long.");
-			return;
+			// re-build account name and check that it is between 3 and 30 characters long
+			String accountName = "";
+			for (int i = 0; i < split.length - 4; i++) {
+				accountName += split[4 + i];
+			}
+			if (accountName.length() < 3 || accountName.length() > 30) {
+				System.out.println("Account name provided to log file is too long.");
+				return;
+			}
 		}
 
 			try {
@@ -507,6 +509,14 @@ public class FrontEnd {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
+
+		if (args != null) {
+			if (args.length > 0) {
+				System.out.println(args[0]);
+			}
+		} else {
+			System.out.println("args not found");
+		}
 
 		System.out.println("Welcome to QBASIC.");
 		login();
