@@ -100,7 +100,6 @@ public class FrontEnd {
 					accountName += " ";
 			}
 		}
-
 		return accountName;
 	}
 
@@ -152,54 +151,56 @@ public class FrontEnd {
      * @param input - the entry to the log file.
      */
 	private static void writeFile(String input) {
+		if (input.equals("EOS")) {
+			logFile.println(input);
+			return;
+		}
 		// make sure line is less than 61 characters long (including new line character)
-		if (input.length() > 60) {
+		else if (input.length() > 60) {
 			System.out.println("Transaction file line too long.");
 			return;
 		}
-
 		// make sure the string is in the right format:
 		// CCC AAAA MMMM BBBB NNNN
-		String[] split = input.split("\\s+");
-
-		// make sure the transaction code is correct
-		String[] validTransactionCode = {"DEP", "WDR", "XFR", "NEW", "DEL", "EOS"};
-		if (!checkInputOK(split[0], validTransactionCode)) {
-			System.out.println("Incorrect transmission code.");
-			return;
-		}
-
-		// make sure the account number is the in the correct form
-		if (split.length > 1) {
-			if (split[1].length() != 7) {
+		else {
+			String[] split = input.split("\\s+");
+			// make sure the transaction code is correct
+			String[] validTransactionCode = {"DEP", "WDR", "XFR", "NEW", "DEL", "EOS"};
+			if (!checkInputOK(split[0], validTransactionCode)) {
+				System.out.println("Incorrect transmission code.");
+				return;
+			}
+			// make sure the account number is the in the correct form
+			else if (split[1].length() != 7) {
 				System.out.println("Account number provided to the log file is incorrect.");
 				return;
 			}
-
 			// make sure the amount is between 3 and 8 decimal digits
-			if (split[2].length() > 8 || split[2].length() < 3) {
+			else if ((split[2].length() > 8 || split[2].length() < 3)) {
 				System.out.println("Value provided to log is the incorrect amount.");
 				return;
 			}
-
-			// re-build account name and check that it is between 3 and 30 characters long
-			String accountName = "";
-			for (int i = 0; i < split.length - 4; i++) {
-				accountName += split[4 + i];
-			}
-			if (accountName.length() < 3 || accountName.length() > 30) {
-				System.out.println("Account name provided to log file is too long.");
-				return;
+			else {
+				// re-build account name and check that it is between 3 and 30 characters long
+				String accountName = "";
+				for (int i = 0; i < split.length - 4; i++) {
+					accountName += split[4+i];
+				}
+				if (accountName.length() < 3 || accountName.length() > 30) {
+					System.out.println("Account name provided to log file is too long.");
+					return;
+				}
+				else {
+					try {
+						// write to file
+						logFile.println(input);
+					} catch (NullPointerException e) {
+						System.out.println("Log file not initialized.");
+					}
+				}
 			}
 		}
-
-			try {
-				// write to file
-				logFile.println(input);
-			} catch (NullPointerException e) {
-				System.out.println("Log file not initialized.");
-			}
-		}
+	}
 
 
 	/**
@@ -240,29 +241,32 @@ public class FrontEnd {
 			acc2 = getInput();
 		} while (!checkInputOK(acc2, getAllAccNumStr()));
 		do { // still need to check if the input is number here
-			System.out.println("Please enter the amount to deposit in cents: ");
+			System.out.println("Please enter the amount to transfer in cents: ");
 			amountString = getInput();
 			amount =Integer.parseInt(amountString)/100;
-		} while ((UserType.AGENT.equals(user) && ((amount > 99999999) || (amount < 0))) ||
-				((UserType.ATM.equals(user) && ((amount > 100000) || (amount < 0)))));
+		} while ((UserType.AGENT.equals(user) && ((amount > 999999) || (amount < 0))) ||
+				((UserType.ATM.equals(user) && ((amount > 1000) || (amount < 0)))));
 		// find the account in the account file and do the withdrawing.
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(acc1)) {
 				Double newValue = acct.getAccountValue() - amount;
-				if (newValue < 0) // This account do not have that much money.
+				if (newValue < 0)  {
+					// This account do not have that much money.
 					System.out.println("You only have " + acct.getAccountValue() + "(in cents) in your account.");
+					return;
+				}
 				else {
 					acct.setAccountValue(newValue);
-					output = output + amount + " " + acct.getAccountNumber() + " " + acct.getAccountName();
+					output = output + amount * 100 + " " + acct.getAccountNumber() + " " + acct.getAccountName();
 				}
 			}
 			if (acct.getAccountNumber() == Integer.parseInt(acc2)) {
 				Double newValue = acct.getAccountValue() + amount;
 				acct.setAccountValue(newValue);
 				output = "XFR " + acct.getAccountNumber() + " " + output;
-				writeFile(output);
 			}
 		}
+		writeFile(output);
 	}
 
 	/**
@@ -286,8 +290,8 @@ public class FrontEnd {
 			System.out.println("Please enter the amount to withdraw in cents: ");
 			amountString = getInput();
 			amount =Integer.parseInt(amountString)/100;
-		} while ((UserType.AGENT.equals(user)&& ((amount > 99999999) || (amount < 0))) ||
-				((UserType.ATM.equals(user) && ((amount > 100000) || (amount < 0)))));
+		} while ((UserType.AGENT.equals(user)&& ((amount > 999999) || (amount < 0))) ||
+				((UserType.ATM.equals(user) && ((amount > 1000) || (amount < 0)))));
 		// find the account in the account file and do the withdrawing.
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(acc)) {
@@ -299,7 +303,7 @@ public class FrontEnd {
 					System.out.println("a total of at most $1,000 can be withdrawn from a single account in a single ATM session");
 				else {
 					acct.setAccountValue(newValue);
-					writeFile("WDR " + acct.getAccountNumber() + " " + amount + " (none) " + acct.getAccountName());
+					writeFile("WDR " + acct.getAccountNumber() + " " + amount * 100 + " (none) " + acct.getAccountName());
 				}
 			}
 		}
@@ -332,7 +336,7 @@ public class FrontEnd {
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(acc)) {
 				acct.depositIntoAccount((Double)amount);
-				writeFile("DEP " + acct.getAccountNumber() + " " + amount + " (none) " + acct.getAccountName());
+				writeFile("DEP " + acct.getAccountNumber() + " " + amount * 100 + " (none) " + acct.getAccountName());
 			}
 		}
 	}
@@ -444,8 +448,12 @@ public class FrontEnd {
 	 * @throws Exception
 	 */
 	public static void login() throws Exception {
-		Boolean logout = false;
 		String userInput;
+		do {
+			System.out.println("Please type login.");
+			userInput = getInput().toLowerCase();
+		} while (!userInput.equals("login"));
+		Boolean logout = false;
 		String[] validInput = {"machine", "agent"};
 		do {
 			System.out.println("Please login as: machine or agent");
@@ -512,11 +520,9 @@ public class FrontEnd {
 	public static void main(String[] args) throws Exception {
 
 		// get the file names for account list and transaction summary from terminal
-		if (args != null) {
-			if (args.length == 2) {
-				accountFileName = args[0];
-				transactionSummaryName = args[1];
-			}
+		if (args != null && args.length == 2) {
+			accountFileName = args[0];
+			transactionSummaryName = args[1];
 		} else {
 			System.out.println("File names not provided.");
 			System.exit(0);
@@ -524,7 +530,6 @@ public class FrontEnd {
 
 		System.out.println("Welcome to QBASIC.");
 		login();
-
 
 	}
 }
