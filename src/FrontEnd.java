@@ -10,6 +10,8 @@ public class FrontEnd {
 	public static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
 	public static UserType user; /* user is "atm" or "agent" */
     public static PrintWriter logFile; /* the log file for all transactions */
+	public static String accountFileName = "";
+	public static String transactionSummaryName = "";
 
 	/**
 	 * Reads the account file.
@@ -24,9 +26,8 @@ public class FrontEnd {
 		//System.out.println("Please enter the path of the account list file.");
 		try {
 			// use the file path from the user to get the file
-			String pathFromUser = "MasterAccountFileValid.txt";
-			Path path = FileSystems.getDefault().getPath(pathFromUser);
-			File file = new File(pathFromUser); /* used to determine that there is a file at that path */
+			Path path = FileSystems.getDefault().getPath(accountFileName);
+			File file = new File(accountFileName); /* used to determine that there is a file at that path */
 
 			// If the file doesn't exist, warn user and return.
 			if (!file.exists()) {
@@ -130,7 +131,7 @@ public class FrontEnd {
      */
 	private static void initializeLogFile() {
 	    try {
-	        logFile = new PrintWriter("transaction-log.txt", "UTF-8");
+	        logFile = new PrintWriter(transactionSummaryName, "UTF-8");
         } catch (IOException e) {
             System.out.println("Error creating log file.");
             System.exit(1);
@@ -510,12 +511,15 @@ public class FrontEnd {
 	 */
 	public static void main(String[] args) throws Exception {
 
+		// get the file names for account list and transaction summary from terminal
 		if (args != null) {
-			if (args.length > 0) {
-				System.out.println(args[0]);
+			if (args.length == 2) {
+				accountFileName = args[0];
+				transactionSummaryName = args[1];
 			}
 		} else {
-			System.out.println("args not found");
+			System.out.println("File names not provided.");
+			System.exit(0);
 		}
 
 		System.out.println("Welcome to QBASIC.");
