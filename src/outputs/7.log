@@ -1,0 +1,12 @@
+Welcome to QBASIC.
+Please type login.
+Please login as: machine or agent
+Please select a transaction or type logout: 
+A. deposit to an account
+B. withdraw from an account
+C. transfer from one account to another
+Please enter the letter or type logout: 
+Please enter the from account number: 
+Please enter the to account number: 
+Please enter the amount to transfer in cents: 
+Please enter the amount to transfer in cents: 

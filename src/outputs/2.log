@@ -1,0 +1,10 @@
+Welcome to QBASIC.
+Please type login.
+Please login as: machine or agent
+Please select a transaction
+A. deposit to an account
+B. withdraw from an account
+C. transfer from one account to another
+D. creating a new account
+E. delete an existing account
+Please enter the letter: 

@@ -1,0 +1,6 @@
+login
+machine
+B
+2353055
+120000
+end
