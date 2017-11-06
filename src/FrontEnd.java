@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class FrontEnd {
 
-
+	public static Scanner screen;
 	public static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
 	public static UserType user; /* user is "atm" or "agent" */
     public static PrintWriter logFile; /* the log file for all transactions */
@@ -32,6 +32,7 @@ public class FrontEnd {
 			// If the file doesn't exist, warn user and return.
 			if (!file.exists()) {
 				System.out.println("\tFile not found.");
+				System.exit(0);
 				return;
 			}
 
@@ -116,10 +117,8 @@ public class FrontEnd {
 			accountNumbersFromAccount.add(account.getAccountNumber());
 		}
 		String[] accNumString = new String[accountNumbersFromAccount.size()];
-		for (int i = 0; i < accountNumbersFromAccount.size(); i++) {
+		for (int i = 0; i < accountNumbersFromAccount.size(); i++) 
 			accNumString[i] = accountNumbersFromAccount.get(i).toString();
-
-		}
 		return accNumString;
 	}
 
@@ -176,7 +175,7 @@ public class FrontEnd {
 				return;
 			}
 			// make sure the amount is between 3 and 8 decimal digits
-			else if ((split[2].length() > 8 || split[2].length() < 3)) {
+			else if ((split[2].length() > 8 || (split[2].length() < 3) && !split[2].equals("0"))) {
 				System.out.println("Value provided to log is the incorrect amount.");
 				return;
 			}
@@ -187,7 +186,8 @@ public class FrontEnd {
 					accountName += split[4+i];
 				}
 				if (accountName.length() < 3 || accountName.length() > 30) {
-					System.out.println("Account name provided to log file is too long.");
+					System.out.println(accountName);
+					System.out.println("Account name provided to log file is incorrect.");
 					return;
 				}
 				else {
@@ -209,13 +209,23 @@ public class FrontEnd {
 	 * @return the user input
 	 */
 	public static String getInput() {
-		Scanner screen = new Scanner(System.in);
 		String input = screen.nextLine();
 		if (input.equalsIgnoreCase("end")) {
 			closeLogFile();
 			System.exit(0);
 		}
 		return input;
+	}
+	
+	public static boolean isNumber(String input) {
+		boolean isNumber = true;
+		char[] ch = input.toCharArray();
+		for (int i = 0; i < ch.length; i++) {
+			isNumber = Character.isDigit(ch[i]);
+			if (!isNumber)
+				return isNumber;
+		}
+		return isNumber;
 	}
 
 	/**
@@ -240,9 +250,11 @@ public class FrontEnd {
 			System.out.println("Please enter the to account number: ");
 			acc2 = getInput();
 		} while (!checkInputOK(acc2, getAllAccNumStr()));
-		do { // still need to check if the input is number here
-			System.out.println("Please enter the amount to transfer in cents: ");
-			amountString = getInput();
+		do { 
+			do {
+				System.out.println("Please enter the amount to transfer in cents: ");
+				amountString = getInput();
+			} while (!isNumber(amountString));
 			amount =Integer.parseInt(amountString)/100;
 		} while ((UserType.AGENT.equals(user) && ((amount > 999999) || (amount < 0))) ||
 				((UserType.ATM.equals(user) && ((amount > 1000) || (amount < 0)))));
@@ -286,9 +298,11 @@ public class FrontEnd {
 			System.out.println("Please enter account number: ");
 			acc = getInput();
 		} while (!checkInputOK(acc, getAllAccNumStr()));
-		do {  // still need to check if the input is number here
-			System.out.println("Please enter the amount to withdraw in cents: ");
-			amountString = getInput();
+		do {  
+			do {
+				System.out.println("Please enter the amount to withdraw in cents: ");
+				amountString = getInput();
+			} while (!isNumber(amountString));
 			amount =Integer.parseInt(amountString)/100;
 		} while ((UserType.AGENT.equals(user)&& ((amount > 999999) || (amount < 0))) ||
 				((UserType.ATM.equals(user) && ((amount > 1000) || (amount < 0)))));
@@ -299,10 +313,11 @@ public class FrontEnd {
 				if (newValue < 0) // This account do not have that much money.
 					System.out.println("You only have " + acct.getAccountValue() + " in your account.");
 					// In the ATM session at most $1000 can be withdrawn from a single account.
-				else if (((acct.getAccountValue() + amount) > 100000) && UserType.ATM.equals(user))
+				else if (((acct.getWithdraw() + amount) > 1000) && UserType.ATM.equals(user))
 					System.out.println("a total of at most $1,000 can be withdrawn from a single account in a single ATM session");
 				else {
 					acct.setAccountValue(newValue);
+					acct.setWithdraw(acct.getWithdraw() + amount);
 					writeFile("WDR " + acct.getAccountNumber() + " " + amount * 100 + " (none) " + acct.getAccountName());
 				}
 			}
@@ -327,9 +342,11 @@ public class FrontEnd {
 			acc = getInput();
 		} while (!checkInputOK(acc, getAllAccNumStr()));
 		do {  // still need to check if the input is number here
-			System.out.println("Please enter the amount to deposit in cents: ");
-			amountString = getInput();
-			amount = Integer.parseInt(amountString)/100;
+			do {
+				System.out.println("Please enter the amount to deposit in cents: ");
+				amountString = getInput();
+			} while (!isNumber(amountString));
+			amount =Integer.parseInt(amountString)/100;
 		} while ((UserType.AGENT.equals(user) && ((amount > 999999) || (amount < 0))) ||
 				((UserType.ATM.equals(user) && ((amount > 1000) || (amount < 0)))));
 		// find the account and do the depositing.
@@ -346,20 +363,20 @@ public class FrontEnd {
 		String input = getInput();
 		String[] split = input.split("\\s+");
 		String accNumber = split[0];
-
-		while(newAcctOK(accNumber)) { // newAccOK returns true if account doesnt exist
+		
+		while(newAcctOK(accNumber)) { // newAccOK returns true if account does not exist
 			System.out.println("Invalid account number, please enter valid account number");
 			accNumber = getInput();
 		}
 
 		Account accountToDelete = null;
-		for(Account account : accounts){
-			if (account.getAccountNumber().equals(accNumber))
-				writeFile("DEL " + account.getAccountNumber() + " " + account.getAccountValue() + " " + account.getAccountName());
+		for(Account account : accounts) {
+			if (account.getAccountNumber().toString().equals(accNumber)) {
+				writeFile("DEL " + account.getAccountNumber() + " " + account.getAccountValue() + " (none) " + account.getAccountName());
 				accountToDelete = account;
 			}
-			accounts.remove(accountToDelete);
-
+		}
+		accounts.remove(accountToDelete);
 	}
 
 	/**
@@ -377,6 +394,13 @@ public class FrontEnd {
 
 	}
 
+	private static boolean nameOK(String[] split) {
+		for (String s : split) {
+			if (!s.matches("[A-Za-z0-9]+"))
+				return false;
+		}
+	return true;
+	}
 	/**
 	 * create new account by accepting account number and name from user
 	 * only valid in agent mode
@@ -384,25 +408,27 @@ public class FrontEnd {
 	 */
 	public static void createAcc() {
 		/*-----Getting account Number and checking for validity -----*/ //STILL NEED TO CHECK ACC NUM IS DIFFERENT THAN ALL ACCOUNTS
-		System.out.println("Please type in account number 7 digits long not starting with 0");
-		String accountNumStr = getInput(); //get the account number
-		int accountNumber =Integer.parseInt(accountNumStr); // convert to integer
-		while(String.valueOf(Math.abs((long)accountNumber)).charAt(0) == '0' || String.valueOf(accountNumber).length() != 7 || !newAcctOK(accountNumStr)){
-			System.out.println("Please enter valid account number");
-			accountNumStr = getInput();
-			accountNumber = Integer.parseInt(accountNumStr);
-		}
+		String accountNumStr;
+		int accountNumber;
+		do {
+			do {
+				System.out.println("Please type in account number 7 digits long not starting with 0");
+				accountNumStr = getInput(); //get the account number
+			} while (!isNumber(accountNumStr));
+			accountNumber =Integer.parseInt(accountNumStr); // convert to integer
+		} while(String.valueOf(Math.abs((long)accountNumber)).charAt(0) == '0' || String.valueOf(accountNumber).length() != 7 || !newAcctOK(accountNumStr));
 
 		/*-----Getting account Name and checking for validity -----*/
 		System.out.println("Please enter account name between 3 and 30 alphanumeric digits");
-		String accountName = getInput(); //get the account name
-		while(accountName.length() < 3 && accountName.length() > 30 && !accountName.matches("[A-Za-z0-9]+"))
+		String accountName = getInput(); //get the account name 
+		String[] split = accountName.split("\\s+");
+		while(accountName.length() < 3 || accountName.length() > 30 
+				|| accountName.charAt(0) == ' ' || accountName.charAt(accountName.length() - 1) == ' ' 
+				|| !nameOK(split)) {
 			System.out.println("Please enter valid account name");
 			accountName = getInput();
-		// write the new account to the transaction file
-		String userInput = accountNumStr + " " + accountName;
-		accounts.add(new Account(accountNumStr, "0", accountName));
-		writeFile("NEW " + accountNumStr + " 0 " + accountName);
+		}
+		writeFile("NEW " + accountNumStr + " 0 (none) " + accountName);
 	}
 
 	/**
@@ -417,7 +443,7 @@ public class FrontEnd {
 		System.out.println("D. creating a new account");
 		System.out.println("E. delete an existing account");
 		String input;
-		String[] validInput = {"A", "B", "C", "D", "E"};
+		String[] validInput = {"A", "B", "C", "D", "E", "logout"};
 		do {
 			System.out.println("Please enter the letter: ");
 			input = getInput();
@@ -448,6 +474,9 @@ public class FrontEnd {
 	 * @throws Exception
 	 */
 	public static void login() throws Exception {
+		// call initializeLogFile as soon as user successfully logs in
+		initializeLogFile();
+		
 		String userInput;
 		do {
 			System.out.println("Please type login.");
@@ -464,12 +493,9 @@ public class FrontEnd {
 				user = UserType.ATM;
 		} while (!checkInputOK(userInput, validInput));
 
-		// call initializeLogFile as soon as user successfully logs in
-		initializeLogFile();
-
 		// read the master account file
 		readFile();
-
+		
 		while (!logout) {
 			String tran;
 			if (UserType.AGENT.equals(user))
@@ -485,10 +511,8 @@ public class FrontEnd {
 				transfer();
 			else if (tran.equals("d"))
 				createAcc();
-			else if (tran.equals("e")) {
+			else if (tran.equals("e"))
 				deleteAcc();
-				break;
-			}
 			else
 				logout = true;
 		}
@@ -518,19 +542,23 @@ public class FrontEnd {
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
-
+		screen = new Scanner(System.in);
 		// get the file names for account list and transaction summary from terminal
 		if (args != null) {
-			if (args.length == 2) {
+			if (args.length >= 2) {
 				accountFileName = args[0];
 				transactionSummaryName = args[1];
+			}
+			else {
+				System.out.println("Insufficient files provided.");
+				System.exit(0);
 			}
 		} else {
 			System.out.println("File names not provided.");
 			System.exit(0);
 		}
-
 		System.out.println("Welcome to QBASIC.");
 		login();
+
 	}
 }

@@ -6,17 +6,27 @@ public class Account {
     private Integer accountNumber;
     private Double accountValue;
     private String accountName;
+    private Double withdraw;
 
     Account(String number, String value, String name) {
         try {
             this.accountNumber = new Integer(number);
-            this.accountValue = new Double(value);
+            this.accountValue = new Double(value)/100;
             this.accountName = name;
+            this.withdraw = 0.00;
         } catch (Exception e) {
             System.out.println("There was an error with the account information provided.");
         }
     }
 
+    void setWithdraw(Double d) {
+    	this.withdraw = d;
+    }
+    
+    Double getWithdraw() {
+    	return this.withdraw;
+    }
+    
     Integer getAccountNumber() {
         return this.accountNumber;
     }
