@@ -520,9 +520,11 @@ public class FrontEnd {
 	public static void main(String[] args) throws Exception {
 
 		// get the file names for account list and transaction summary from terminal
-		if (args != null && args.length == 2) {
-			accountFileName = args[0];
-			transactionSummaryName = args[1];
+		if (args != null) {
+			if (args.length == 2) {
+				accountFileName = args[0];
+				transactionSummaryName = args[1];
+			}
 		} else {
 			System.out.println("File names not provided.");
 			System.exit(0);
@@ -530,6 +532,5 @@ public class FrontEnd {
 
 		System.out.println("Welcome to QBASIC.");
 		login();
-
 	}
 }
