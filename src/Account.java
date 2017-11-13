@@ -2,7 +2,7 @@
  * Account class which contains the name, number, and value of a bank account.
  * Also contains helper functions for accessing and altering account data.
  */
-public class Account {
+public class Account implements Comparable<Account>{
     private Integer accountNumber;
     private Double accountValue;
     private String accountName;
@@ -43,18 +43,69 @@ public class Account {
         return this.accountName;
     }
 
+    /**
+     * Withdraw from the account.
+     * @param value: The amount for withdraw.
+     * @param tran: 1 will be withdraw transaction and 2 will be transfer transaction.
+     */
     void withdrawFromAccount(Double value) throws Exception {
-        Double newValue = this.getAccountValue() - value;
-        if (newValue < 0) {
-            throw new Exception("Withdrawal exceeds available amount.");
-        } else {
-            this.setAccountValue(newValue);
-        }
+    	Double newValue = this.accountValue - value;
+		if (newValue < 0) {
+			// no account should ever have a negative balance.
+			System.out.println("The transaction below fails.");
+			System.out.println("Withdraw $" + value + " from account: " + this.accountNumber);
+			System.out.println("No account should ever have a negative balance. ");
+			System.out.println("");
+			return;
+		}
+		else {
+			this.setAccountValue(newValue);
+		}
     }
 
+    /**
+     * Deposit to the account
+     * @param value: The amount for deposit
+     */
     void depositIntoAccount(Double value) throws Exception {
         Double newValue = this.getAccountValue() + value;
         this.setAccountValue(newValue);
     }
-
+    
+    /**
+     * transfer from the account.
+     * @param value: The amount for transfer
+     */
+    boolean transferFromAccount(Double value) throws Exception {
+    	Double newValue = this.accountValue - value;
+		if (newValue < 0) {
+			// no account should ever have a negative balance.
+			System.out.println("The transaction below fails.");
+			System.out.println("Transfer $" + value + " from account: " + this.accountNumber);
+			System.out.println("No account should ever have a negative balance. ");
+			System.out.println("");
+			return false;
+		}
+		else {
+			this.setAccountValue(newValue);
+			return true;
+		}
+    }
+    
+    /**
+     * transfer to the account.
+     * @param value: The amount for transfer
+     */
+    void transferToAccount(Double value) throws Exception {
+    	depositIntoAccount(value);
+    }
+    
+    /**
+     * Make Account object comparable. 
+     * When it is added to an arrayList, it should be sorted automatically.
+     */
+    public int compareTo(Account other) {
+    	return other.accountNumber - this.accountNumber;
+    }
+    
 }
