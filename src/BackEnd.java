@@ -91,14 +91,8 @@ public class BackEnd {
 		}
 		return true;
 	}
-	
-	/**
-	 * Do the create transaction to the account list.
-	 * @param tran: The split String array from each line of the transaction summary file.
-	 */
-	private static void createTran(String[] tran) {
-		String accountNum = tran[1];
-		String accountVal = tran[2];
+
+	private static String getAccountNameFromTransaction(String[] tran) {
 		String accountName = "";
 		for (int i = 4; i < tran.length; i++) {
 			if (tran[i] != null) {
@@ -107,6 +101,18 @@ public class BackEnd {
 					accountName += " ";
 			}
 		}
+		return accountName;
+	}
+
+	/**
+	 * Do the create transaction to the account list.
+	 * @param tran: The split String array from each line of the transaction summary file.
+	 */
+	private static void createTran(String[] tran) {
+		String accountNum = tran[1];
+		String accountVal = tran[2];
+		String accountName = getAccountNameFromTransaction(tran);
+
 		if (createOK(accountNum, accountVal))
 			accounts.add(new Account(accountNum, "0", accountName));
 		else {
@@ -144,14 +150,7 @@ public class BackEnd {
 	 */
 	private static void deleteTran(String[] tran) {
 		String accountNum = tran[1];
-		String accountName = "";
-		for (int i = 4; i < tran.length; i++) {
-			if (tran[i] != null) {
-				accountName += tran[i];
-				if (i < tran.length - 1)
-					accountName += " ";
-			}
-		}
+		String accountName = getAccountNameFromTransaction(tran);
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(accountNum)) {
 				int i = deleteOK(acct.getAccountValue(), accountNum, accountName);
