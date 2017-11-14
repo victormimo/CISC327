@@ -46,7 +46,6 @@ public class Account implements Comparable<Account>{
     /**
      * Withdraw from the account.
      * @param value: The amount for withdraw.
-     * @param tran: 1 will be withdraw transaction and 2 will be transfer transaction.
      */
     void withdrawFromAccount(Double value) throws Exception {
     	Double newValue = this.accountValue - value;
@@ -56,7 +55,6 @@ public class Account implements Comparable<Account>{
 			System.out.println("Withdraw $" + value + " from account: " + this.accountNumber);
 			System.out.println("No account should ever have a negative balance. ");
 			System.out.println("");
-			return;
 		}
 		else {
 			this.setAccountValue(newValue);
