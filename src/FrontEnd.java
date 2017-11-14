@@ -32,87 +32,6 @@ public class FrontEnd {
 		return accNumString;
 	}
 
-    /**
-     * Called when a user successfully logs into the program. Initializes the global log file.
-     * Overwrites any pre-existing log file which has the same filename (filename is hardcoded so the log file is
-     * re-written every time the program runs).
-     */
-	private static void initializeLogFile() {
-	    try {
-	        logFile = new PrintWriter(transactionSummaryName, "UTF-8");
-        } catch (IOException e) {
-            System.out.println("Error creating log file.");
-            System.exit(1);
-        }
-    }
-
-    /**
-     * Called when the program is closed, to close the log file.
-     */
-    private static void closeLogFile() {
-        writeFile("EOS");
-        logFile.close();
-    }
-
-    /**
-     * Called whenever something needs to be written to the log file.
-     *
-     * @param input - the entry to the log file.
-     */
-	private static void writeFile(String input) {
-		if (input.equals("EOS")) {
-			logFile.println(input);
-			return;
-		}
-		// make sure line is less than 61 characters long (including new line character)
-		else if (input.length() > 60) {
-			System.out.println("Transaction file line too long.");
-			return;
-		}
-		// make sure the string is in the right format:
-		// CCC AAAA MMMM BBBB NNNN
-		else {
-			String[] split = input.split("\\s+");
-			// make sure the transaction code is correct
-			String[] validTransactionCode = {"DEP", "WDR", "XFR", "NEW", "DEL", "EOS"};
-			if (!checkInputOK(split[0], validTransactionCode)) {
-				System.out.println("Incorrect transmission code.");
-				return;
-			}
-			// make sure the account number is the in the correct form
-			else if (split[1].length() != 7) {
-				System.out.println("Account number provided to the log file is incorrect.");
-				return;
-			}
-			// make sure the amount is between 3 and 8 decimal digits
-			else if ((split[2].length() > 8 || (split[2].length() < 3) && !split[2].equals("0"))) {
-				System.out.println("Value provided to log is the incorrect amount.");
-				return;
-			}
-			else {
-				// re-build account name and check that it is between 3 and 30 characters long
-				String accountName = "";
-				for (int i = 0; i < split.length - 4; i++) {
-					accountName += split[4+i];
-				}
-				if (accountName.length() < 3 || accountName.length() > 30) {
-					System.out.println(accountName);
-					System.out.println("Account name provided to log file is incorrect.");
-					return;
-				}
-				else {
-					try {
-						// write to file
-						logFile.println(input);
-					} catch (NullPointerException e) {
-						System.out.println("Log file not initialized.");
-					}
-				}
-			}
-		}
-	}
-
-
 	/**
 	 * Get the user input as text lines.
 	 * And end the program whenever the user types end or END.
@@ -121,7 +40,7 @@ public class FrontEnd {
 	public static String getInput() {
 		String input = screen.nextLine();
 		if (input.equalsIgnoreCase("end")) {
-			closeLogFile();
+			FileIOHelper.closeLogFile(logFile);
 			System.exit(0);
 		}
 		return input;
@@ -130,8 +49,8 @@ public class FrontEnd {
 	public static boolean isNumber(String input) {
 		boolean isNumber = true;
 		char[] ch = input.toCharArray();
-		for (int i = 0; i < ch.length; i++) {
-			isNumber = Character.isDigit(ch[i]);
+		for (char aCh : ch) {
+			isNumber = Character.isDigit(aCh);
 			if (!isNumber)
 				return isNumber;
 		}
@@ -155,11 +74,11 @@ public class FrontEnd {
 		do {
 			System.out.println("Please enter the from account number: ");
 			acc1 = getInput();
-		} while (!checkInputOK(acc1, getAllAccNumStr()));
+		} while (!FileIOHelper.checkInputOK(acc1, getAllAccNumStr()));
 		do {
 			System.out.println("Please enter the to account number: ");
 			acc2 = getInput();
-		} while (!checkInputOK(acc2, getAllAccNumStr()));
+		} while (!FileIOHelper.checkInputOK(acc2, getAllAccNumStr()));
 		do { 
 			do {
 				System.out.println("Please enter the amount to transfer in cents: ");
@@ -188,7 +107,7 @@ public class FrontEnd {
 				output = "XFR " + acct.getAccountNumber() + " " + output;
 			}
 		}
-		writeFile(output);
+		FileIOHelper.writeTransactionToLogFile(output, logFile);
 	}
 
 	/**
@@ -207,7 +126,7 @@ public class FrontEnd {
 		do {
 			System.out.println("Please enter account number: ");
 			acc = getInput();
-		} while (!checkInputOK(acc, getAllAccNumStr()));
+		} while (!FileIOHelper.checkInputOK(acc, getAllAccNumStr()));
 		do {  
 			do {
 				System.out.println("Please enter the amount to withdraw in cents: ");
@@ -228,7 +147,8 @@ public class FrontEnd {
 				else {
 					acct.setAccountValue(newValue);
 					acct.setWithdraw(acct.getWithdraw() + amount);
-					writeFile("WDR " + acct.getAccountNumber() + " " + amount * 100 + " (none) " + acct.getAccountName());
+					String output = "WDR " + acct.getAccountNumber() + " " + amount * 100 + " (none) " + acct.getAccountName();
+					FileIOHelper.writeTransactionToLogFile(output, logFile);
 				}
 			}
 		}
@@ -250,7 +170,7 @@ public class FrontEnd {
 		do {
 			System.out.println("Please enter account number: ");
 			acc = getInput();
-		} while (!checkInputOK(acc, getAllAccNumStr()));
+		} while (!FileIOHelper.checkInputOK(acc, getAllAccNumStr()));
 		do {  // still need to check if the input is number here
 			do {
 				System.out.println("Please enter the amount to deposit in cents: ");
@@ -263,7 +183,9 @@ public class FrontEnd {
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(acc)) {
 				acct.depositIntoAccount((Double)amount);
-				writeFile("DEP " + acct.getAccountNumber() + " " + amount * 100 + " (none) " + acct.getAccountName());
+				String output = "DEP " + acct.getAccountNumber() + " " + amount * 100 + " (none) " + acct.getAccountName();
+
+				FileIOHelper.writeTransactionToLogFile(output, logFile);
 			}
 		}
 	}
@@ -282,8 +204,14 @@ public class FrontEnd {
 		Account accountToDelete = null;
 		for(Account account : accounts) {
 			if (account.getAccountNumber().toString().equals(accNumber)) {
-				writeFile("DEL " + account.getAccountNumber() + " " + account.getAccountValue() + " (none) " + account.getAccountName());
 				accountToDelete = account;
+				String output = "DEL "
+						+ account.getAccountNumber()
+						+ " "
+						+ account.getAccountValue()
+						+ " (none) "
+						+ account.getAccountName();
+				FileIOHelper.writeTransactionToLogFile(output, logFile);
 			}
 		}
 		accounts.remove(accountToDelete);
@@ -338,7 +266,8 @@ public class FrontEnd {
 			System.out.println("Please enter valid account name");
 			accountName = getInput();
 		}
-		writeFile("NEW " + accountNumStr + " 0 (none) " + accountName);
+		String output = "NEW " + accountNumStr + " 0 (none) " + accountName;
+		FileIOHelper.writeTransactionToLogFile(output, logFile);
 	}
 
 	/**
@@ -357,7 +286,7 @@ public class FrontEnd {
 		do {
 			System.out.println("Please enter the letter: ");
 			input = getInput();
-		} while (!checkInputOK(input, validInput));
+		} while (!FileIOHelper.checkInputOK(input, validInput));
 		return input.toLowerCase();
 	}
 
@@ -375,7 +304,7 @@ public class FrontEnd {
 		do {
 			System.out.println("Please enter the letter or type logout: ");
 			input = getInput();
-		} while (!checkInputOK(input, validInput));
+		} while (!FileIOHelper.checkInputOK(input, validInput));
 		return input.toLowerCase();
 	}
 
@@ -385,7 +314,7 @@ public class FrontEnd {
 	 */
 	public static void login() throws Exception {
 		// call initializeLogFile as soon as user successfully logs in
-		initializeLogFile();
+		logFile = FileIOHelper.initializeLogFile(transactionSummaryName);
 		
 		String userInput;
 		do {
@@ -401,7 +330,7 @@ public class FrontEnd {
 				user = UserType.AGENT;
 			else if (userInput.equalsIgnoreCase("machine"))
 				user = UserType.ATM;
-		} while (!checkInputOK(userInput, validInput));
+		} while (!FileIOHelper.checkInputOK(userInput, validInput));
 
 		// read the master account file
 		accounts = FileIOHelper.readAccountsFromFile(accountFileName);
@@ -428,22 +357,7 @@ public class FrontEnd {
 		}
 
 		// close the log file when the user logs out
-        closeLogFile();
-	}
-
-	/**
-	 * check if a string input is valid
-	 * @param input - the user input
-	 * @param validInput - an array of String, containing all the valid input.
-	 * @return a boolean value showing if the input is valid
-	 */
-	public static boolean checkInputOK(String input, String[] validInput) {
-		boolean inputOK = false;
-		for (String valid : validInput) {
-			if (input.equalsIgnoreCase(valid))
-				inputOK = true;
-		}
-		return inputOK;
+        FileIOHelper.closeLogFile(logFile);
 	}
 
 	/**

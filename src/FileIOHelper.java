@@ -1,6 +1,7 @@
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
@@ -11,6 +12,25 @@ import java.util.ArrayList;
  * Helper class that reads and writes files, and parses account and transaction files
  */
 public class FileIOHelper {
+
+    /**
+     * check if a string input is included in a list of valid inputs
+     * @param input - the user input
+     * @param validInput - an array of String, containing all the valid input.
+     * @return a boolean value showing if the input is valid
+     */
+    public static boolean checkInputOK(String input, String[] validInput) {
+        boolean inputOK = false;
+        for (String valid : validInput) {
+            if (input.equalsIgnoreCase(valid))
+                inputOK = true;
+        }
+        return inputOK;
+    }
+
+    //-------------------------------------------------------------------------------------------------------------
+    // Read Files
+    //-------------------------------------------------------------------------------------------------------------
 
     /**
      * Creates a BufferedReader from a file name which is used to create accounts and validate provided files.
@@ -40,10 +60,6 @@ public class FileIOHelper {
         }
         return null;
     }
-
-    //-------------------------------------------------------------------------------------------------------------
-    // Read Account Files
-    //-------------------------------------------------------------------------------------------------------------
 
     /**
      * Reads the account file.
@@ -122,4 +138,91 @@ public class FileIOHelper {
         return accountName;
     }
 
+    //-------------------------------------------------------------------------------------------------------------
+    // Write Files
+    //-------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Called when a user successfully logs into the program. Initializes the global log file.
+     * Overwrites any pre-existing log file which has the same filename (filename is hardcoded so the log file is
+     * re-written every time the program runs).
+     */
+    public static PrintWriter initializeLogFile(String transactionSummaryName) {
+        try {
+            return new PrintWriter(transactionSummaryName, "UTF-8");
+        } catch (IOException e) {
+            System.out.println("Error creating log file.");
+            System.exit(1);
+        }
+        return null;
+    }
+
+    /**
+     * Called when the program is closed, to close the log file.
+     */
+    public static void closeLogFile(PrintWriter file) {
+        writeTransactionToLogFile("EOS", file);
+        file.close();
+    }
+
+    /**
+     * Called whenever something needs to be written to the log file.
+     *
+     * @param input - the entry to the log file.
+     */
+    public static void writeTransactionToLogFile(String input, PrintWriter file) {
+        if (input.equals("EOS")) {
+            writeToFile(input, file);
+        }
+        // make sure line is less than 61 characters long (including new line character)
+        else if (input.length() > 60) {
+            System.out.println("Transaction file line too long.");
+        }
+        // make sure the string is in the right format:
+        // CCC AAAA MMMM BBBB NNNN
+        else {
+            String[] split = input.split("\\s+");
+            // make sure the transaction code is correct
+            String[] validTransactionCode = {"DEP", "WDR", "XFR", "NEW", "DEL", "EOS"};
+            if (!checkInputOK(split[0], validTransactionCode)) {
+                System.out.println("Incorrect transmission code.");
+            }
+            // make sure the account number is the in the correct form
+            else if (split[1].length() != 7) {
+                System.out.println("Account number provided to the log file is incorrect.");
+            }
+            // make sure the amount is between 3 and 8 decimal digits
+            else if ((split[2].length() > 8 || (split[2].length() < 3) && !split[2].equals("0"))) {
+                System.out.println("Value provided to log is the incorrect amount.");
+            }
+            else {
+                // re-build account name and check that it is between 3 and 30 characters long
+                String accountName = "";
+                for (int i = 0; i < split.length - 4; i++) {
+                    accountName += split[4+i];
+                }
+                if (accountName.length() < 3 || accountName.length() > 30) {
+                    System.out.println(accountName);
+                    System.out.println("Account name provided to log file is incorrect.");
+                }
+                else {
+                    try {
+                        // write to file
+                        writeToFile(input, file);
+                    } catch (NullPointerException e) {
+                        System.out.println("Log file not initialized.");
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * A simple program that writes a string to a file
+     * @param input the string to be included in the file
+     * @param file the file in which to write
+     */
+    private static void writeToFile(String input, PrintWriter file) {
+        file.println(input);
+    }
 }
