@@ -1,6 +1,10 @@
 import java.io.BufferedReader;
 import java.util.ArrayList;
 
+/**
+ * Holds the functionality of the Back End of QBasic
+ */
+
 public class BackEnd {
 
     private static String oldMasterAccountFile = "";
@@ -220,7 +224,7 @@ public class BackEnd {
         newMasterAccountFile = "newMaster.txt";
         newValidAccountsList = "newList.txt";
         /*
-		// get the file names for account list and transaction summary from terminal
+        // get the file names for account list and transaction summary from terminal
 		if (args != null) {
 			if (args.length >= 4) {
 				transactionSummaryFile = args[0];

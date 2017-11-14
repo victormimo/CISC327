@@ -2,6 +2,10 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Holds the functionality of the Front End of QBasic
+ */
+
 public class FrontEnd {
 
     private static Scanner screen;
