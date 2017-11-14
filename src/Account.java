@@ -105,7 +105,7 @@ public class Account implements Comparable<Account> {
      * When it is added to an arrayList, it should be sorted automatically.
      */
     public int compareTo(Account other) {
-        return other.accountNumber - this.accountNumber;
+    	return this.accountNumber - other.accountNumber;
     }
 
 }

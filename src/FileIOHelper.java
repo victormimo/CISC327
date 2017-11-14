@@ -243,6 +243,7 @@ public class FileIOHelper {
             System.out.println("Error creating new list file.");
             System.exit(1);
         }
+        Collections.sort(accounts);
         for (Account acct : accounts) {
             String line = acct.getAccountNumber() + "\n";
             newListFile.write(line);
