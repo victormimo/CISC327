@@ -6,103 +6,13 @@ import java.util.Scanner;
 
 public class FrontEnd {
 
-	public static Scanner screen;
-	public static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
-	public static UserType user; /* user is "atm" or "agent" */
-    public static PrintWriter logFile; /* the log file for all transactions */
-	public static String accountFileName = "";
-	public static String transactionSummaryName = "";
-
-	/**
-	 * Reads the account file.
-	 *
-	 * Prompts the user for the path of the account file, and returns a warning to the user if the file isn't found at
-	 * that path.
-	 * Reads each line from the account file and adds it to the global array list containing the account file data.
-	 * todo: add an error chain if the file reading is unsuccessful
-	 */
-	private static void readFile() {
-		// request file path from console
-		//System.out.println("Please enter the path of the account list file.");
-		try {
-			// use the file path from the user to get the file
-			Path path = FileSystems.getDefault().getPath(accountFileName);
-			File file = new File(accountFileName); /* used to determine that there is a file at that path */
-
-			// If the file doesn't exist, warn user and return.
-			if (!file.exists()) {
-				System.out.println("\tFile not found.");
-				System.exit(0);
-				return;
-			}
-
-			// create a reader to read the file, tell the reader how the file is encoded (assumed UTF-8)
-			Charset charset = Charset.forName("UTF-8");
-			BufferedReader reader = Files.newBufferedReader(path, charset);
-
-			// add each line from the file into the global array list containing contents of the account file
-			String line;
-			Account account; /* for the account class */
-			while((line = reader.readLine()) != null) {
-				// using the account class:
-				account = new Account(getAccountNumber(line), getAccountValue(line), getAccountName(line));
-				accounts.add(account);
-			}
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-	}
-
-	/**
-	 * Retrieves the account number from an account in its String format.
-	 * todo: check that the String provided is a valid account info String
-	 *
-	 * @param accountInfo - the String containing the information for an account.
-	 * @return the account number.
-	 */
-	private static String getAccountNumber(String accountInfo) {
-		// since the account information is separated by spaces, split string at all spaces and take the first split
-		String[] split = accountInfo.split("\\s+");
-		return split[0];
-	}
-
-	/**
-	 * Retrieves the account value from an account in its String format.
-	 *
-	 * @param accountInfo - the String containing the information for an account.
-	 * @return the account's value.
-	 */
-	private static String getAccountValue(String accountInfo) {
-		// since the account information is separated by spaces, split string at all spaces and take the second split
-		String[] split = accountInfo.split("\\s+");
-		return split[1];
-	}
-
-	/**
-	 * Retrieves the account name from an account in its String format
-	 *
-	 * @param accountInfo - the String containing the information for an account.
-	 * @return the account's name.
-	 */
-	private static String getAccountName(String accountInfo) {
-		String accountName = "";
-
-		// since the account info is separated by spaces, split string at all spaces
-		// the account name starts at the third split, but may contain spaces that we don't want to erase, so those
-		// 		spaces need to be added back to the name
-		String[] split = accountInfo.split("\\s+");
-		for (int i = 2; i < split.length; i++) {
-			if (split[i] != null) {
-				accountName += split[i];
-				// if there are more parts to add to the name that have been split at the spaces, add a space to the
-				// 		variable containing the account name (no lost information)
-				if (i < split.length - 1)
-					accountName += " ";
-			}
-		}
-		return accountName;
-	}
+	private static Scanner screen;
+	private static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
+	private static UserType user; /* user is "atm" or "agent" */
+    private static PrintWriter logFile; /* the log file for all transactions */
+	private static String accountFileName = "";
+	private static String transactionSummaryName = "";
+	private FileIOHelper ioHelper = new FileIOHelper();
 
 	/**
 	 * Retrieves all the account numbers from the file and wraps them up into an ArrayList of type String.
@@ -494,7 +404,7 @@ public class FrontEnd {
 		} while (!checkInputOK(userInput, validInput));
 
 		// read the master account file
-		readFile();
+		accounts = FileIOHelper.readAccountsFromFile(accountFileName);
 		
 		while (!logout) {
 			String tran;

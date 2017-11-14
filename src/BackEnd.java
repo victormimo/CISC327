@@ -17,115 +17,16 @@ public class BackEnd {
 	private static PrintWriter newListFile;
 	private static PrintWriter newMasterFile;
 	private static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
+	private FileIOHelper ioHelper = new FileIOHelper();
 
-	/**
-	 * Retrieves the account number from an account in its String format.
-	 *
-	 * @param accountInfo - the String containing the information for an account.
-	 * @return the account number.
-	 */
-	private static String getAccountNumber(String accountInfo) {
-		// since the account information is separated by spaces, split string at all spaces and take the first split
-		String[] split = accountInfo.split("\\s+");
-		return split[0];
-	}
-
-	/**
-	 * Retrieves the account value from an account in its String format.
-	 *
-	 * @param accountInfo - the String containing the information for an account.
-	 * @return the account's value.
-	 */
-	private static String getAccountValue(String accountInfo) {
-		// since the account information is separated by spaces, split string at all spaces and take the second split
-		String[] split = accountInfo.split("\\s+");
-		return split[1];
-	}
-
-	/**
-	 * Retrieves the account name from an account in its String format
-	 *
-	 * @param accountInfo - the String containing the information for an account.
-	 * @return the account's name.
-	 */
-	private static String getAccountName(String accountInfo) {
-		String accountName = "";
-
-		// since the account info is separated by spaces, split string at all spaces
-		// the account name starts at the third split, but may contain spaces that we don't want to erase, so those
-		// 		spaces need to be added back to the name
-		String[] split = accountInfo.split("\\s+");
-		for (int i = 2; i < split.length; i++) {
-			if (split[i] != null) {
-				accountName += split[i];
-				// if there are more parts to add to the name that have been split at the spaces, add a space to the
-				// 		variable containing the account name (no lost information)
-				if (i < split.length - 1)
-					accountName += " ";
-			}
-		}
-		return accountName;
-	}
-	
-	/**
-	 * Reads the account file.
-	 *
-	 * Returns a warning to the user if the file isn't found at that path.
-	 * Reads each line from the account file and adds it to the global array list containing the account file data.
-	 */
-	private static void readOldMasterAccount() {
-		try {
-			// use the file path from the user to get the file
-			Path path = FileSystems.getDefault().getPath(oldMasterAccountFile);
-			File file = new File(oldMasterAccountFile); /* used to determine that there is a file at that path */
-
-			// If the file doesn't exist, warn user and return.
-			if (!file.exists()) {
-				System.out.println("\tFile not found.");
-				System.exit(0);
-				return;
-			}
-
-			// create a reader to read the file, tell the reader how the file is encoded (assumed UTF-8)
-			Charset charset = Charset.forName("UTF-8");
-			BufferedReader reader = Files.newBufferedReader(path, charset);
-
-			// add each line from the file into the global array list containing contents of the account file
-			String line;
-			Account account; /* for the account class */
-			while((line = reader.readLine()) != null) {
-				// using the account class:
-				account = new Account(getAccountNumber(line), getAccountValue(line), getAccountName(line));
-				accounts.add(account);
-			}
-
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-		}
-	}
-	
 	/**
 	 * Reads the transaction summary file and do the analysis line by line.
 	 */
-	private static void readTransaction() {
+	public static void readTransactionFromFile() {
 		try {
-			// use the file path from the user to get the file
-			Path path = FileSystems.getDefault().getPath(transactionSummaryFile);
-			File file = new File(transactionSummaryFile); /* used to determine that there is a file at that path */
-
-			// If the file doesn't exist, warn user and return.
-			if (!file.exists()) {
-				System.out.println("\tFile not found.");
-				System.exit(0);
-				return;
-			}
-
-			// create a reader to read the file, tell the reader how the file is encoded (assumed UTF-8)
-			Charset charset = Charset.forName("UTF-8");
-			BufferedReader reader = Files.newBufferedReader(path, charset);
-
+			BufferedReader reader = FileIOHelper.readerFromFile(transactionSummaryFile);
 			String line;
-			while((line = reader.readLine()) != null) 
+			while((line = reader.readLine()) != null)
 				analyzeLine(line);
 
 		} catch (Exception e) {
@@ -180,7 +81,7 @@ public class BackEnd {
 	
 	/**
 	 * Check if a created account have a new, unused account number
-	 * @param accountName
+	 * @param accountVal
 	 * @return false if the new account is not valid
 	 */
 	private static boolean createOK(String accountNum, String accountVal) {
@@ -360,8 +261,8 @@ public class BackEnd {
 	
 	public static void main(String[] args) {
 		checkArgs(args);
-		readOldMasterAccount();
-		readTransaction();
+		accounts = FileIOHelper.readAccountsFromFile(oldMasterAccountFile);
+		readTransactionFromFile();
 	}
 	
 }
