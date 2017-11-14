@@ -7,6 +7,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Helper class that reads and writes files, and parses account and transaction files
@@ -260,6 +261,7 @@ public class FileIOHelper {
             System.out.println("Error creating new master file.");
             System.exit(1);
         }
+        Collections.sort(accounts);
         for (Account acct : accounts) {
             String line = acct.getAccountNumber() + " " + (int) (acct.getAccountValue() * 100) + " " + acct.getAccountName() + '\n';
             newMasterFile.write(line);
