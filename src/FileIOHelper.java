@@ -15,7 +15,8 @@ public class FileIOHelper {
 
     /**
      * check if a string input is included in a list of valid inputs
-     * @param input - the user input
+     *
+     * @param input      - the user input
      * @param validInput - an array of String, containing all the valid input.
      * @return a boolean value showing if the input is valid
      */
@@ -63,7 +64,7 @@ public class FileIOHelper {
 
     /**
      * Reads the account file.
-     *
+     * <p>
      * Prompts the user for the path of the account file, and returns a warning to the user if the file isn't found at
      * that path.
      * Reads each line from the account file and adds it to the global array list containing the account file data.
@@ -76,11 +77,16 @@ public class FileIOHelper {
 
         try {
             // add each line from the file into the global array list containing contents of the account file
-            while((line = readerFromFile(accountFileName).readLine()) != null) {
-                account = new Account(getAccountNumber(line), getAccountValue(line), getAccountName(line));
-                accounts.add(account);
+            BufferedReader reader = readerFromFile(accountFileName);
+            if (reader != null) {
+                while ((line = reader.readLine()) != null) {
+                    account = new Account(getAccountNumber(line), getAccountValue(line), getAccountName(line));
+                    accounts.add(account);
+                }
+                return accounts;
+            } else {
+                System.out.println("Could not read file.");
             }
-            return accounts;
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -194,18 +200,16 @@ public class FileIOHelper {
             // make sure the amount is between 3 and 8 decimal digits
             else if ((split[2].length() > 8 || (split[2].length() < 3) && !split[2].equals("0"))) {
                 System.out.println("Value provided to log is the incorrect amount.");
-            }
-            else {
+            } else {
                 // re-build account name and check that it is between 3 and 30 characters long
                 String accountName = "";
                 for (int i = 0; i < split.length - 4; i++) {
-                    accountName += split[4+i];
+                    accountName += split[4 + i];
                 }
                 if (accountName.length() < 3 || accountName.length() > 30) {
                     System.out.println(accountName);
                     System.out.println("Account name provided to log file is incorrect.");
-                }
-                else {
+                } else {
                     try {
                         // write to file
                         writeToFile(input, file);
@@ -219,8 +223,9 @@ public class FileIOHelper {
 
     /**
      * A simple program that writes a string to a file
+     *
      * @param input the string to be included in the file
-     * @param file the file in which to write
+     * @param file  the file in which to write
      */
     private static void writeToFile(String input, PrintWriter file) {
         file.println(input);
@@ -232,7 +237,7 @@ public class FileIOHelper {
     public static void writeNewList(String newValidAccountsList, ArrayList<Account> accounts) {
         PrintWriter newListFile = null;
         try {
-           newListFile = new PrintWriter(newValidAccountsList, "UTF-8");
+            newListFile = new PrintWriter(newValidAccountsList, "UTF-8");
         } catch (IOException e) {
             System.out.println("Error creating new list file.");
             System.exit(1);
@@ -256,7 +261,7 @@ public class FileIOHelper {
             System.exit(1);
         }
         for (Account acct : accounts) {
-            String line = acct.getAccountNumber() + " " + (int)(acct.getAccountValue() * 100) + " " + acct.getAccountName() + '\n';
+            String line = acct.getAccountNumber() + " " + (int) (acct.getAccountValue() * 100) + " " + acct.getAccountName() + '\n';
             newMasterFile.write(line);
         }
         newMasterFile.close();
