@@ -1,11 +1,6 @@
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class BackEnd {
@@ -22,12 +17,16 @@ public class BackEnd {
 	/**
 	 * Reads the transaction summary file and do the analysis line by line.
 	 */
-	public static void readTransactionFromFile() {
+	private static void readTransactionFromFile() {
 		try {
 			BufferedReader reader = FileIOHelper.readerFromFile(transactionSummaryFile);
 			String line;
-			while((line = reader.readLine()) != null)
-				analyzeLine(line);
+			if (reader != null) {
+				while ((line = reader.readLine()) != null)
+					analyzeLine(line);
+			} else {
+				System.out.println("Error reading the file.");
+			}
 
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
@@ -38,7 +37,7 @@ public class BackEnd {
 	 * Do the deposit transaction to the account list.
 	 * @param tran: The split String array from each line of the transaction summary file.
 	 */
-	private static void depositTran(String[] tran) throws NumberFormatException, Exception {
+	private static void depositTran(String[] tran) throws Exception {
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(tran[1])) 
 				acct.depositIntoAccount(Double.parseDouble(tran[2]) / 100);
@@ -62,7 +61,7 @@ public class BackEnd {
 	 * Do the transfer transaction to the account list.
 	 * @param tran: The split String array from each line of the transaction summary file.
 	 */
-	private static void transferTran(String[] tran) throws NumberFormatException, Exception {
+	private static void transferTran(String[] tran) throws Exception {
 		String toAccountNum = tran[1];
 		String fromAccountNum = tran[3];
 		Double amount = Double.parseDouble(tran[2]) / 100;
@@ -81,10 +80,9 @@ public class BackEnd {
 	
 	/**
 	 * Check if a created account have a new, unused account number
-	 * @param accountVal
 	 * @return false if the new account is not valid
 	 */
-	private static boolean createOK(String accountNum, String accountVal) {
+	private static boolean createOK(String accountNum) {
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(accountNum) || Double.parseDouble(accountNum) == 0)
 				return false;
@@ -113,7 +111,7 @@ public class BackEnd {
 		String accountVal = tran[2];
 		String accountName = getAccountNameFromTransaction(tran);
 
-		if (createOK(accountNum, accountVal))
+		if (createOK(accountNum))
 			accounts.add(new Account(accountNum, "0", accountName));
 		else {
 			System.out.println("The transaction below fails.");
@@ -126,9 +124,9 @@ public class BackEnd {
 	/**
 	 * Check if a deleted account have a zero balance.
 	 * Check if the name given in a delete transaction matches the name associated with the deleted acccount
-	 * @param accountVal
-	 * @param accountNum
-	 * @param accountName
+	 * @param accountVal the value of the account
+	 * @param accountNum the account number
+	 * @param accountName the name of the account
 	 * @return 1 if it does not have a zero balance, 2 if the name does not match, and 0 if it is good to delete.
 	 */
 	private static int deleteOK(Double accountVal, String accountNum, String accountName) {
@@ -207,10 +205,9 @@ public class BackEnd {
 	/**
 	 * Analyze every lines and call functions based on what kind of the transaction it is.
 	 * @param line: each time it takes one line from the transaction summary file and analyze it.
-	 * @throws Exception 
-	 * @throws NumberFormatException 
+	 * @throws Exception
 	 */
-	private static void analyzeLine(String line) throws NumberFormatException, Exception {
+	private static void analyzeLine(String line) throws Exception {
 		String[] split = line.split("\\s+");
 		if (split[0].equals("DEP"))
 			depositTran(split);

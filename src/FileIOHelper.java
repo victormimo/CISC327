@@ -33,9 +33,7 @@ public class FileIOHelper {
 
             // create a reader to read the file, tell the reader how the file is encoded (assumed UTF-8)
             Charset charset = Charset.forName("UTF-8");
-            BufferedReader reader = Files.newBufferedReader(path, charset);
-
-            return reader;
+            return Files.newBufferedReader(path, charset);
 
         } catch (IOException i) {
             System.out.println(i.getMessage());
@@ -123,11 +121,5 @@ public class FileIOHelper {
         }
         return accountName;
     }
-
-    //-------------------------------------------------------------------------------------------------------------
-    // Read Transaction Files
-    //-------------------------------------------------------------------------------------------------------------
-
-
 
 }
