@@ -119,7 +119,6 @@ public class BackEnd {
      */
     private static void createTran(String[] tran) {
         String accountNum = tran[1];
-        String accountVal = tran[2];
         String accountName = getAccountNameFromTransaction(tran);
 
         if (createOK(accountNum))
@@ -218,12 +217,13 @@ public class BackEnd {
      * @param args: The command line arguments.
      */
     private static void checkArgs(String[] args) {
+    	/*
         // Used for debugging.
         transactionSummaryFile = "transaction-log.txt";
         oldMasterAccountFile = "MasterAccountFileValid.txt";
         newMasterAccountFile = "newMaster.txt";
         newValidAccountsList = "newList.txt";
-        /*
+        */
         // get the file names for account list and transaction summary from terminal
 		if (args != null) {
 			if (args.length >= 4) {
@@ -240,7 +240,6 @@ public class BackEnd {
 			System.out.println("File names not provided.");
 			System.exit(0);
 		}
-		*/
     }
 
     /**
