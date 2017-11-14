@@ -225,4 +225,40 @@ public class FileIOHelper {
     private static void writeToFile(String input, PrintWriter file) {
         file.println(input);
     }
+
+    /**
+     * Write to the new valid list file
+     */
+    public static void writeNewList(String newValidAccountsList, ArrayList<Account> accounts) {
+        PrintWriter newListFile = null;
+        try {
+           newListFile = new PrintWriter(newValidAccountsList, "UTF-8");
+        } catch (IOException e) {
+            System.out.println("Error creating new list file.");
+            System.exit(1);
+        }
+        for (Account acct : accounts) {
+            String line = acct.getAccountNumber() + "\n";
+            newListFile.write(line);
+        }
+        newListFile.close();
+    }
+
+    /**
+     * Write to the new master file.
+     */
+    public static void writeMasterFile(String newMasterAccountFile, ArrayList<Account> accounts) {
+        PrintWriter newMasterFile = null;
+        try {
+            newMasterFile = new PrintWriter(newMasterAccountFile, "UTF-8");
+        } catch (IOException e) {
+            System.out.println("Error creating new master file.");
+            System.exit(1);
+        }
+        for (Account acct : accounts) {
+            String line = acct.getAccountNumber() + " " + (int)(acct.getAccountValue() * 100) + " " + acct.getAccountName() + '\n';
+            newMasterFile.write(line);
+        }
+        newMasterFile.close();
+    }
 }

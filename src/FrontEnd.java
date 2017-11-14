@@ -1,6 +1,4 @@
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -37,7 +35,7 @@ public class FrontEnd {
 	 * And end the program whenever the user types end or END.
 	 * @return the user input
 	 */
-	public static String getInput() {
+	private static String getInput() {
 		String input = screen.nextLine();
 		if (input.equalsIgnoreCase("end")) {
 			FileIOHelper.closeLogFile(logFile);
@@ -46,7 +44,7 @@ public class FrontEnd {
 		return input;
 	}
 	
-	public static boolean isNumber(String input) {
+	private static boolean isNumber(String input) {
 		boolean isNumber = true;
 		char[] ch = input.toCharArray();
 		for (char aCh : ch) {
@@ -65,11 +63,11 @@ public class FrontEnd {
 	 * Finally find the to account and finish the transferring.
 	 */
 	public static void transfer() {
-		String acc1 = ""; // the from account name
-		String acc2 = ""; // the to account name
-		String amountString = "";
+		String acc1; // the from account name
+		String acc2; // the to account name
+		String amountString;
 		String output = ""; // the output to the transaction summary file.
-		double amount = 0.0;
+		double amount;
 		// get the from account number, to account number and the amount to withdraw in cents.
 		do {
 			System.out.println("Please enter the from account number: ");
@@ -119,9 +117,9 @@ public class FrontEnd {
 	 * todo2: when the user cannot withdraw because the amount is not valid, need a exit() method to go back to the previous part.
 	 */
 	public static void withdraw() {
-		String acc = "";
-		String amountString = "";
-		double amount = 0;
+		String acc;
+		String amountString;
+		double amount;
 		// get the account number and the amount to withdraw in cents.
 		do {
 			System.out.println("Please enter account number: ");
@@ -160,17 +158,18 @@ public class FrontEnd {
 	 * Get the valid existing account number and the amount
 	 * Then find the account in the account list and do the depositing.
 	 * todo: for the amount to deposit, still need to check if the user input only contains digits.
-	 * @throws Exception
+	 * @throws Exception in case file can't be written to
 	 */
-	public static void deposit() throws Exception {
-		String acc = "";
-		String amountString = "";
-		double amount = 0;
+	private static void deposit() throws Exception {
+		String acc;
+		String amountString;
+		double amount;
 		// get the account number and the amount to deposit in cents.
 		do {
 			System.out.println("Please enter account number: ");
 			acc = getInput();
 		} while (!FileIOHelper.checkInputOK(acc, getAllAccNumStr()));
+
 		do {  // still need to check if the input is number here
 			do {
 				System.out.println("Please enter the amount to deposit in cents: ");
@@ -179,10 +178,11 @@ public class FrontEnd {
 			amount =Integer.parseInt(amountString)/100;
 		} while ((UserType.AGENT.equals(user) && ((amount > 999999) || (amount < 0))) ||
 				((UserType.ATM.equals(user) && ((amount > 1000) || (amount < 0)))));
+
 		// find the account and do the depositing.
 		for (Account acct : accounts) {
 			if (acct.getAccountNumber() == Integer.parseInt(acc)) {
-				acct.depositIntoAccount((Double)amount);
+				acct.depositIntoAccount(amount);
 				String output = "DEP " + acct.getAccountNumber() + " " + amount * 100 + " (none) " + acct.getAccountName();
 
 				FileIOHelper.writeTransactionToLogFile(output, logFile);
@@ -190,7 +190,7 @@ public class FrontEnd {
 		}
 	}
 
-	public static void deleteAcc() {
+	private static void deleteAcc() {
 		System.out.println("Please enter the account number and name you wish to delete");
 		String input = getInput();
 		String[] split = input.split("\\s+");
@@ -222,7 +222,7 @@ public class FrontEnd {
 	 * @param newAcct - the new account number in string
 	 * @return a boolwan showing if it is valid.
 	 */
-	public static boolean newAcctOK(String newAcct) {
+	private static boolean newAcctOK(String newAcct) {
 		String[] existingAcct = getAllAccNumStr();
 		for (String acc : existingAcct) {
 			if (newAcct.equals(acc))
@@ -239,12 +239,13 @@ public class FrontEnd {
 		}
 	return true;
 	}
+
 	/**
 	 * create new account by accepting account number and name from user
 	 * only valid in agent mode
 	 * adds account to account arraylist
 	 */
-	public static void createAcc() {
+	private static void createAcc() {
 		/*-----Getting account Number and checking for validity -----*/ //STILL NEED TO CHECK ACC NUM IS DIFFERENT THAN ALL ACCOUNTS
 		String accountNumStr;
 		int accountNumber;
@@ -274,7 +275,7 @@ public class FrontEnd {
 	 * show the prompt when the user is an agent and get the transaction
 	 * @return the valid user input
 	 */
-	public static String loginAgent() {
+	private static String loginAgent() {
 		System.out.println("Please select a transaction");
 		System.out.println("A. deposit to an account");
 		System.out.println("B. withdraw from an account");
@@ -294,7 +295,7 @@ public class FrontEnd {
 	 * show the prompt when the user is an ATM and get the transaction
 	 * @return the valid user input
 	 */
-	public static String loginATM() {
+	private static String loginATM() {
 		System.out.println("Please select a transaction or type logout: ");
 		System.out.println("A. deposit to an account");
 		System.out.println("B. withdraw from an account");
@@ -310,9 +311,9 @@ public class FrontEnd {
 
 	/**
 	 * get the user, get the transaction and call the other transaction
-	 * @throws Exception
+	 * @throws Exception in case file is not properly created
 	 */
-	public static void login() throws Exception {
+	private static void login() throws Exception {
 		// call initializeLogFile as soon as user successfully logs in
 		logFile = FileIOHelper.initializeLogFile(transactionSummaryName);
 		
@@ -342,18 +343,28 @@ public class FrontEnd {
 			else
 				tran = loginATM();
 
-			if (tran.equals("a"))
-				deposit();
-			else if (tran.equals("b"))
-				withdraw();
-			else if (tran.equals("c"))
-				transfer();
-			else if (tran.equals("d"))
-				createAcc();
-			else if (tran.equals("e"))
-				deleteAcc();
-			else
-				logout = true;
+			// although switch cases are a code smell that imply the need for inheritance, this is a justified use
+			// of a switch case because it represents possible choices made by the user
+			switch (tran) {
+				case "a":
+					deposit();
+					break;
+				case "b":
+					withdraw();
+					break;
+				case "c":
+					transfer();
+					break;
+				case "d":
+					createAcc();
+					break;
+				case "e":
+					deleteAcc();
+					break;
+				default:
+					logout = true;
+					break;
+			}
 		}
 
 		// close the log file when the user logs out
@@ -363,7 +374,7 @@ public class FrontEnd {
 	/**
 	 * show the welcome message and read the account file
 	 * get the login input and call the login method.
-	 * @throws Exception
+	 * @throws Exception in case file is not properly created
 	 */
 	public static void main(String[] args) throws Exception {
 		screen = new Scanner(System.in);
@@ -383,6 +394,5 @@ public class FrontEnd {
 		}
 		System.out.println("Welcome to QBASIC.");
 		login();
-
 	}
 }

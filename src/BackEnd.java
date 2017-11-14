@@ -1,6 +1,4 @@
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 
 public class BackEnd {
@@ -9,9 +7,7 @@ public class BackEnd {
 	private static String newMasterAccountFile = "";
 	private static String transactionSummaryFile = "";
 	private static String newValidAccountsList = "";
-	private static PrintWriter newListFile;
-	private static PrintWriter newMasterFile;
-	private static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
+	private static ArrayList<Account> accounts = new ArrayList<>();
 	private FileIOHelper ioHelper = new FileIOHelper();
 
 	/**
@@ -90,6 +86,11 @@ public class BackEnd {
 		return true;
 	}
 
+	/**
+	 * Parses the string array for the transaction to get the account name
+	 * @param tran the string array holding details for the transaction
+	 * @return the account name
+	 */
 	private static String getAccountNameFromTransaction(String[] tran) {
 		String accountName = "";
 		for (int i = 4; i < tran.length; i++) {
@@ -169,65 +170,38 @@ public class BackEnd {
 	}
 	
 	/**
-	 * Write to the new valid list file
-	 */
-	private static void writeNewList() {
-		try {
-	        newListFile = new PrintWriter(newValidAccountsList, "UTF-8");
-        } catch (IOException e) {
-            System.out.println("Error creating new list file.");
-            System.exit(1);
-        }
-		for (Account acct : accounts) {
-			String line = acct.getAccountNumber() + "\n";
-			newListFile.write(line);
-		}
-		newListFile.close();
-	}
-	
-	/**
-	 * Write to the new master file.
-	 */
-	private static void writeMasterFile() {
-		try {
-	        newMasterFile = new PrintWriter(newMasterAccountFile, "UTF-8");
-        } catch (IOException e) {
-            System.out.println("Error creating new master file.");
-            System.exit(1);
-        }
-		for (Account acct : accounts) {
-			String line = acct.getAccountNumber() + " " + (int)(acct.getAccountValue() * 100) + " " + acct.getAccountName() + '\n';
-			newMasterFile.write(line);
-		}
-		newMasterFile.close();
-	}
-	
-	/**
 	 * Analyze every lines and call functions based on what kind of the transaction it is.
 	 * @param line: each time it takes one line from the transaction summary file and analyze it.
-	 * @throws Exception
+	 * @throws Exception when there is an error writing the new files
 	 */
 	private static void analyzeLine(String line) throws Exception {
 		String[] split = line.split("\\s+");
-		if (split[0].equals("DEP"))
-			depositTran(split);
-		else if (split[0].equals("WDR"))
-			withdrawTran(split);
-		else if (split[0].equals("XFR"))
-			transferTran(split);
-		else if (split[0].equals("NEW"))
-			createTran(split);
-		else if (split[0].equals("DEL")) 
-			deleteTran(split);
-		else { // when it is EOS
-			writeNewList();
-			writeMasterFile();
+		switch (split[0]) {
+			case "DEP":
+				depositTran(split);
+				break;
+			case "WDR":
+				withdrawTran(split);
+				break;
+			case "XFR":
+				transferTran(split);
+				break;
+			case "NEW":
+				createTran(split);
+				break;
+			case "DEL":
+				deleteTran(split);
+				break;
+			default:  // when it is EOS
+				FileIOHelper.writeNewList(newValidAccountsList, accounts);
+				FileIOHelper.writeMasterFile(newMasterAccountFile, accounts);
+				break;
 		}
 	}
 	
 	/**
 	 * Check the validation of the commend line arguments.
-	 * @param args: The commend line arguments.
+	 * @param args: The command line arguments.
 	 */
 	private static void checkArgs(String[] args) {
 		// Used for debugging.
@@ -254,7 +228,11 @@ public class BackEnd {
 		}
 		*/
 	}
-	
+
+	/**
+	 *
+	 * @param args the command line arguments
+	 */
 	public static void main(String[] args) {
 		checkArgs(args);
 		accounts = FileIOHelper.readAccountsFromFile(oldMasterAccountFile);
