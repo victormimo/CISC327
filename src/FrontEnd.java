@@ -343,8 +343,13 @@ public class FrontEnd {
                 user = UserType.ATM;
         } while (!FileIOHelper.checkInputOK(userInput, validInput));
 
-        // read the master account file
-        accounts = FileIOHelper.readAccountsFromFile(accountFileName);
+        // check valid account list file, read the valid account list file
+        if (FileIOHelper.validateValidAccountListFile(accountFileName)) {
+            accounts = FileIOHelper.readAccountsFromFile(accountFileName);
+        } else {
+            System.out.println("Account List file not valid.");
+            System.exit(0);
+        }
 
         while (!logout) {
             String tran;

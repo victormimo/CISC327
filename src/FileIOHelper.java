@@ -149,6 +149,41 @@ public class FileIOHelper {
     // Validate Files
     //-------------------------------------------------------------------------------------------------------------
 
+    public static boolean validateValidAccountListFile(String filename) {
+        try {
+            String line;
+            String accountNumber = "";
+            BufferedReader reader = readerFromFile(filename);
+
+            if (reader != null) {
+                while (reader.readLine()) != null) {
+                    line = reader.readLine();
+                    // check that length of line is less than 8 characters
+                    if (line.length() > 8) {
+                        System.out.println("Too many characters in the line of the account list.\n");
+                        return false;
+                    }
+
+                    accountNumber = line.substring(0, 7);
+                    if (accountNumber.charAt(0) == "0") {
+                        System.out.println("Account number begins with 0.\n");
+                        return false;
+                    }
+                }
+
+                if (line != "0000000") {
+                    System.out.println("Account list file not properly terminated.\n");
+                    return false;
+                }
+            } else {
+                System.out.println("Could not read file.\n");
+            }
+        } catch (Exception e) {
+            System.out.println("Could not read file.\n");
+        }
+        return true;
+    }
+
     /**
      * Validates that the Master Account File meets all constraints.
      *
@@ -164,8 +199,8 @@ public class FileIOHelper {
             BufferedReader reader = readerFromFile(filename);
             if (reader != null) {
                 while ((line = reader.readLine()) != null) {
-                    // check that length of line is less than 74 characters
-                    if (line.length() > 47) {
+                    // check that length of line is less than 48 characters
+                    if (line.length() > 48) {
                         return false;
                     }
 
