@@ -146,6 +146,53 @@ public class FileIOHelper {
     }
 
     //-------------------------------------------------------------------------------------------------------------
+    // Validate Files
+    //-------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Validates that the Master Account File meets all constraints.
+     *
+     * @param filename the name of the master account file
+     * @return true if the file is valid, false if the file is not valid
+     */
+    public static boolean validateMasterAccountFile(String filename) {
+        try {
+            String line;
+            String[] accountData;
+            String accountName = "";
+
+            BufferedReader reader = readerFromFile(filename);
+            if (reader != null) {
+                while ((line = reader.readLine()) != null) {
+                    // check that length of line is less than 74 characters
+                    if (line.length() > 47) {
+                        return false;
+                    }
+
+                    // check that there are not less than 3 entries in account data
+                    accountData = line.split("\\s+");
+                    if (accountData.length < 3) {
+                        return false;
+                    }
+
+                    // re-build account name and check that it is between 3 and 30 characters long
+                    for (int i = 0; i < accountData.length - 2; i++) {
+                        accountName += accountData[2 + i];
+                    }
+                    if (accountName.length() < 3 || accountName.length() > 30) {
+                        return false;
+                    }
+                }
+            } else {
+                System.out.println("Could not read file.");
+            }
+        } catch (Exception e) {
+            System.out.println("Could not read file.");
+        }
+        return true;
+    }
+
+    //-------------------------------------------------------------------------------------------------------------
     // Write Files
     //-------------------------------------------------------------------------------------------------------------
 
