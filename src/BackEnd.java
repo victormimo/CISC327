@@ -211,6 +211,9 @@ public class BackEnd {
         }
     }
 
+    /**
+     * Checks to see if the master account file is in the right format, then initializes the account list
+     */
     private static void initializeAccounts() {
         if (FileIOHelper.validateMasterAccountFile(oldMasterAccountFile)) {
             accounts = FileIOHelper.readAccountsFromFile(oldMasterAccountFile);
