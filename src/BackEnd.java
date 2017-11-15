@@ -211,6 +211,15 @@ public class BackEnd {
         }
     }
 
+    private static void initializeAccounts() {
+        if (FileIOHelper.validateMasterAccountFile(oldMasterAccountFile)) {
+            accounts = FileIOHelper.readAccountsFromFile(oldMasterAccountFile);
+        } else {
+            System.out.println("Could not read master account file.");
+            System.exit(0);
+        }
+    }
+
     /**
      * Check the validation of the commend line arguments.
      *
@@ -231,6 +240,8 @@ public class BackEnd {
 				oldMasterAccountFile = args[1];
 				newMasterAccountFile = args[2];
 				newValidAccountsList = args[3];
+
+				initializeAccounts();
 			}
 			else {
 				System.out.println("Insufficient files provided.");
@@ -247,7 +258,6 @@ public class BackEnd {
      */
     public static void main(String[] args) {
         checkArgs(args);
-        accounts = FileIOHelper.readAccountsFromFile(oldMasterAccountFile);
         readTransactionFromFile();
     }
 
