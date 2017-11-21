@@ -1,0 +1,4 @@
+The transaction below fails.
+Withdraw $12.12 from account: 1212121
+Then account number does not exist. 
+

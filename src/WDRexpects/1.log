@@ -1,0 +1,4 @@
+The transaction below fails.
+Withdraw $100.0 from account: 3543064
+No account should ever have a negative balance. 
+
