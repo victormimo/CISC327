@@ -191,11 +191,11 @@ public class FileIOHelper {
         try {
             String line;
             String[] accountData;
-            String accountName = "";
 
             BufferedReader reader = readerFromFile(filename);
             if (reader != null) {
                 while ((line = reader.readLine()) != null) {
+                	
                     // check that length of line is less than 48 characters
                     if (line.length() > 48) {
                         return false;
@@ -207,21 +207,25 @@ public class FileIOHelper {
                         return false;
                     }
 
+                    String accountName = "";
                     // re-build account name and check that it is between 3 and 30 characters long
                     for (int i = 0; i < accountData.length - 2; i++) {
                         accountName += accountData[2 + i];
+                        System.out.println(accountName);
                     }
                     if (accountName.length() < 3 || accountName.length() > 30) {
                         return false;
                     }
                 }
+                
             } else {
                 System.out.println("Could not read file.");
             }
+            
         } catch (Exception e) {
             System.out.println("Could not read file.");
         }
-        return true;
+		return true;
     }
 
     //-------------------------------------------------------------------------------------------------------------
