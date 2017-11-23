@@ -1,15 +1,15 @@
 #i/bin/bash
 javac BackEnd.java
-for i in {1..3}
+for i in {1..7}
 do
     echo "running test $i"
-    java BackEnd WDRinputs/$i.txt WDRinputs/MasterAccountFileValid.txt WDRoutputs/accounts$i.txt WDRoutputs/list$i.txt > WDRoutputs/$i.log
+    java BackEnd NEWinputs/$i.txt NEWinputs/MasterAccountFileValid.txt NEWoutputs/accounts$i.txt NEWoutputs/list$i.txt > NEWoutputs/$i.log
 done
 
-for i in {1..3}
+for i in {1..7}
 do
     echo "checking outputs of test $i"
-    diff WDRoutputs/Accounts$i.txt WDRexpects/Accounts$i.txt
-    diff WDRoutputs/List$i.txt WDRexpects/List$i.txt
-    diff WDRoutputs/$i.log WDRexpects/$i.log
+    diff NEWoutputs/Accounts$i.txt NEWexpects/Accounts$i.txt
+    diff NEWoutputs/List$i.txt NEWexpects/List$i.txt
+    diff NEWoutputs/$i.log NEWexpects/$i.log
 done
