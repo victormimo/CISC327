@@ -101,9 +101,10 @@ public class BackEnd {
 
         // make sure the account number is unique
         for (Account acct : accounts) {
-            if (acct.getAccountNumber() == Integer.parseInt(accountNum) || Double.parseDouble(accountNum) == 0)
+            if (acct.getAccountNumber() == Integer.parseInt(accountNum) || Double.parseDouble(accountNum) == 0) {
                 System.out.println("Account number is not unique.");
                 return false;
+            }
         }
 
         // make sure the first and last characters of the name are not spaces
@@ -114,9 +115,10 @@ public class BackEnd {
 
         // make sure the account name is between 3 and 30 characters
         if (accountName.length() < 3 || accountName.length() > 30) {
-            System.out.println("Account name invalid - must be between 3 and 30 characters.");
+            System.out.println("Account name must be between 3 and 30 characters.");
             return false;
         }
+
         return true;
     }
 
@@ -134,11 +136,6 @@ public class BackEnd {
                 if (i < tran.length - 1)
                     accountName += " ";
             }
-            // if tran[i] is null but there are more entries in the name, the user has put too many spaces
-            else if (i != tran.length - 1) {
-                System.out.println("Account name must not contain spaces.");
-                return null;
-            }
         }
         return accountName;
     }
@@ -152,9 +149,10 @@ public class BackEnd {
         String accountNum = tran[1];
         String accountName = getAccountNameFromTransaction(tran);
 
-        if (createOK(accountNum, accountName))
+        if (createOK(accountNum, accountName)) {
             accounts.add(new Account(accountNum, "0", accountName));
-        else {
+            System.out.println("Account created.");
+        } else {
             System.out.println("The transaction below fails.");
             System.out.println("Create account: " + accountName + " " + accountNum);
             System.out.println("A created account must have a new, unused account number.");

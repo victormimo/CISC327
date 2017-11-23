@@ -16,6 +16,7 @@ HTWI
 Steam
 Beer
 BeerStore
+Account name must be between 3 and 30 characters.
 The transaction below fails.
 Create account: te 8888888
 A created account must have a new, unused account number.
