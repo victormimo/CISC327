@@ -113,7 +113,7 @@ public class BackEnd {
     }
 
     /**
-     * Do the create transaction to the account list.
+     * Do the create account transaction to the account list.
      *
      * @param tran: The split String array from each line of the transaction summary file.
      */
@@ -126,7 +126,7 @@ public class BackEnd {
         else {
             System.out.println("The transaction below fails.");
             System.out.println("Create account: " + accountName + " " + accountNum);
-            System.out.println("A created account have a new, unused account number.");
+            System.out.println("A created account must have a new, unused account number.");
             System.out.println("");
         }
     }
