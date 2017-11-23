@@ -134,6 +134,11 @@ public class BackEnd {
                 if (i < tran.length - 1)
                     accountName += " ";
             }
+            // if tran[i] is null but there are more entries in the name, the user has put too many spaces
+            else if (i != tran.length - 1) {
+                System.out.println("Account name must not contain spaces.");
+                return null;
+            }
         }
         return accountName;
     }
