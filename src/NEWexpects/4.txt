@@ -1,0 +1,5 @@
+Account name must not contain spaces.
+The transaction below fails.
+Create account: testaccount 8888888
+A created account must have a new, unused account number.
+

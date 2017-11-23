@@ -89,31 +89,32 @@ public class BackEnd {
     private static boolean createOK(String accountNum, String accountName) {
         // check that new account number doesn't begin with 0
         if ("0".equals(accountNum.substring(0,1))) {
-            System.out.println("Account number begins with a 0");
+            System.out.println("Account number begins with a 0.");
             return false;
         }
 
         // check that new account number doesn't have more than 7 digits
         if (accountNum.length() != 7) {
-            System.out.println("Account number not the right length (7 digits)");
+            System.out.println("Account number not the right length (7 digits).");
             return false;
         }
 
         // make sure the account number is unique
         for (Account acct : accounts) {
             if (acct.getAccountNumber() == Integer.parseInt(accountNum) || Double.parseDouble(accountNum) == 0)
+                System.out.println("Account number is not unique.");
                 return false;
         }
 
         // make sure the first and last characters of the name are not spaces
         if (" ".equals(accountName.substring(0,1)) || " ".equals(accountName.substring(accountName.length()-1,accountName.length()))) {
-            System.out.println("account name begins or ends with a space");
+            System.out.println("account name begins or ends with a space.");
             return false;
         }
 
         // make sure the account name is between 3 and 30 characters
         if (accountName.length() < 3 || accountName.length() > 30) {
-            System.out.println("Account name invalid - must be between 3 and 30 characters");
+            System.out.println("Account name invalid - must be between 3 and 30 characters.");
             return false;
         }
         return true;

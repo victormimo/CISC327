@@ -1,2 +1,2 @@
-WDR 0888888 0 0 testaccount
+NEW 0888888 0 0 testaccount
 EOS

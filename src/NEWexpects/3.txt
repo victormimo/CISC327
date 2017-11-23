@@ -1,0 +1,5 @@
+Account number is not unique.
+The transaction below fails.
+Create account: testaccount 1004353
+A created account must have a new, unused account number.
+

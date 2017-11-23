@@ -1,2 +1,2 @@
-WDR 1004353 0 0 testaccount
+NEW 1004353 0 0 testaccount
 EOS

@@ -1,0 +1,5 @@
+Account number begins with a 0.
+The transaction below fails.
+Create account: testaccount 0888888
+A created account must have a new, unused account number.
+
