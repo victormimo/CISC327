@@ -245,8 +245,6 @@ public class BackEnd {
      * Checks to see if the master account file is in the right format, then initializes the account list
      */
     private static void initializeAccounts() {
-        String line;
-        String[] split;
         if (FileIOHelper.validateMasterAccountFile(oldMasterAccountFile)) {
            /* System.out.println("First");
             BufferedReader reader = FileIOHelper.readerFromFile(oldMasterAccountFile);

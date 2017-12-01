@@ -9,18 +9,18 @@ import java.util.Scanner;
 public class FrontEnd {
 
     private static Scanner screen;
-    private static ArrayList<Account> accounts = new ArrayList<>(); /* using the account class */
+    private static ArrayList<String> accounts = new ArrayList<>(); /* using the account class */
+    private static String[] list;
     private static UserType user; /* user is "atm" or "agent" */
     private static PrintWriter logFile; /* the log file for all transactions */
     private static String accountFileName = "";
     private static String transactionSummaryName = "";
-    private FileIOHelper ioHelper = new FileIOHelper();
-
     /**
      * Retrieves all the account numbers from the file and wraps them up into an ArrayList of type String.
      *
      * @return a String array containing all the account numbers from the account file.
      */
+    /*
     private static String[] getAllAccNumStr() {
 
         ArrayList<Integer> accountNumbersFromAccount = new ArrayList<>();
@@ -33,7 +33,7 @@ public class FrontEnd {
             accNumString[i] = accountNumbersFromAccount.get(i).toString();
         return accNumString;
     }
-
+*/
     /**
      * Get the user input as text lines.
      * And end the program whenever the user types end or END.
@@ -77,11 +77,11 @@ public class FrontEnd {
         do {
             System.out.println("Please enter the from account number: ");
             acc1 = getInput();
-        } while (!FileIOHelper.checkInputOK(acc1, getAllAccNumStr()));
+        } while (!FileIOHelper.checkInputOK(acc1, list));
         do {
             System.out.println("Please enter the to account number: ");
             acc2 = getInput();
-        } while (!FileIOHelper.checkInputOK(acc2, getAllAccNumStr()));
+        } while (!FileIOHelper.checkInputOK(acc2, list));
         do {
             do {
                 System.out.println("Please enter the amount to transfer in cents: ");
@@ -90,25 +90,7 @@ public class FrontEnd {
             amount = Integer.parseInt(amountString) / 100;
         } while ((UserType.AGENT.equals(user) && ((amount > 999999) || (amount < 0))) ||
                 ((UserType.ATM.equals(user) && ((amount > 1000) || (amount < 0)))));
-        // find the account in the account file and do the withdrawing.
-        for (Account acct : accounts) {
-            if (acct.getAccountNumber() == Integer.parseInt(acc1)) {
-                Double newValue = acct.getAccountValue() - amount;
-                if (newValue < 0) {
-                    // This account do not have that much money.
-                    System.out.println("You only have " + acct.getAccountValue() + "(in cents) in your account.");
-                    return;
-                } else {
-                    acct.setAccountValue(newValue);
-                    output = output + amount * 100 + " " + acct.getAccountNumber() + " " + acct.getAccountName();
-                }
-            }
-            if (acct.getAccountNumber() == Integer.parseInt(acc2)) {
-                Double newValue = acct.getAccountValue() + amount;
-                acct.setAccountValue(newValue);
-                output = "XFR " + acct.getAccountNumber() + " " + output;
-            }
-        }
+        output = "XFR " + acc2 + " " + amount * 100 + " " + acc1 + " ***";
         FileIOHelper.writeTransactionToLogFile(output, logFile);
     }
 
@@ -128,7 +110,7 @@ public class FrontEnd {
         do {
             System.out.println("Please enter account number: ");
             acc = getInput();
-        } while (!FileIOHelper.checkInputOK(acc, getAllAccNumStr()));
+        } while (!FileIOHelper.checkInputOK(acc, list));
         do {
             do {
                 System.out.println("Please enter the amount to withdraw in cents: ");
@@ -138,22 +120,8 @@ public class FrontEnd {
         } while ((UserType.AGENT.equals(user) && ((amount > 999999) || (amount < 0))) ||
                 ((UserType.ATM.equals(user) && ((amount > 1000) || (amount < 0)))));
         // find the account in the account file and do the withdrawing.
-        for (Account acct : accounts) {
-            if (acct.getAccountNumber() == Integer.parseInt(acc)) {
-                Double newValue = acct.getAccountValue() - amount;
-                if (newValue < 0) // This account do not have that much money.
-                    System.out.println("You only have " + acct.getAccountValue() + " in your account.");
-                    // In the ATM session at most $1000 can be withdrawn from a single account.
-                else if (((acct.getWithdraw() + amount) > 1000) && UserType.ATM.equals(user))
-                    System.out.println("a total of at most $1,000 can be withdrawn from a single account in a single ATM session");
-                else {
-                    acct.setAccountValue(newValue);
-                    acct.setWithdraw(acct.getWithdraw() + amount);
-                    String output = "WDR " + acct.getAccountNumber() + " " + amount * 100 + " (none) " + acct.getAccountName();
-                    FileIOHelper.writeTransactionToLogFile(output, logFile);
-                }
-            }
-        }
+        String output = "WDR " + acc + " " + amount * 100 + " 0000000 ***";
+        FileIOHelper.writeTransactionToLogFile(output, logFile);
     }
 
     /**
@@ -173,7 +141,7 @@ public class FrontEnd {
         do {
             System.out.println("Please enter account number: ");
             acc = getInput();
-        } while (!FileIOHelper.checkInputOK(acc, getAllAccNumStr()));
+        } while (!FileIOHelper.checkInputOK(acc, list));
 
         do {  // still need to check if the input is number here
             do {
@@ -183,54 +151,51 @@ public class FrontEnd {
             amount = Integer.parseInt(amountString) / 100;
         } while ((UserType.AGENT.equals(user) && ((amount > 999999) || (amount < 0))) ||
                 ((UserType.ATM.equals(user) && ((amount > 1000) || (amount < 0)))));
-
-        // find the account and do the depositing.
-        for (Account acct : accounts) {
-            if (acct.getAccountNumber() == Integer.parseInt(acc)) {
-                acct.depositIntoAccount(amount);
-                String output = "DEP " + acct.getAccountNumber() + " " + amount * 100 + " (none) " + acct.getAccountName();
-
-                FileIOHelper.writeTransactionToLogFile(output, logFile);
-            }
-        }
+        String output = "DEP " + acc + " " + amount * 100 + " 0000000 ***";
+        FileIOHelper.writeTransactionToLogFile(output, logFile);
     }
 
+    /**
+     * Delete an existing account.
+     */
     private static void deleteAcc() {
-        System.out.println("Please enter the account number and name you wish to delete");
-        String input = getInput();
-        String[] split = input.split("\\s+");
-        String accNumber = split[0];
-
-        while (newAcctOK(accNumber)) { // newAccOK returns true if account does not exist
-            System.out.println("Invalid account number, please enter valid account number");
+        System.out.println("Please enter the account name you wish to delete");
+        String name = getInput();
+        String accNumber;
+        do { // newAccOK returns true if account does not exist
+        	System.out.println("Please enter the account number you wish to delete");
             accNumber = getInput();
-        }
-
-        Account accountToDelete = null;
-        for (Account account : accounts) {
-            if (account.getAccountNumber().toString().equals(accNumber)) {
-                accountToDelete = account;
-                String output = "DEL "
-                        + account.getAccountNumber()
-                        + " "
-                        + account.getAccountValue()
-                        + " (none) "
-                        + account.getAccountName();
-                FileIOHelper.writeTransactionToLogFile(output, logFile);
-            }
-        }
-        accounts.remove(accountToDelete);
+        } while (!newAcctOK(accNumber) || !isNumber(accNumber));
+        String output = "DEL " + accNumber + " 000 0000000 " + name;
+        FileIOHelper.writeTransactionToLogFile(output, logFile);
+        list = remove(list, accNumber);
     }
 
+    /**
+     * remove an account number from an account list.
+     * @param list : The original list
+     * @param num : The account number to be deleted
+     * @return the new list
+     */
+    private static String[] remove(String[] list, String num) {
+    	String[] newList = new String[list.length - 1];
+    	int i = 0;
+    	for (String s : list) {
+    		if (!s.equals(num)) {
+    			newList[i] = s;
+    			i++;
+    		}
+    	}
+    	return newList;
+    }
     /**
      * check it a new account number is different than all accounts
      *
      * @param newAcct - the new account number in string
-     * @return a boolwan showing if it is valid.
+     * @return a boolean showing if it is valid.
      */
     private static boolean newAcctOK(String newAcct) {
-        String[] existingAcct = getAllAccNumStr();
-        for (String acc : existingAcct) {
+        for (String acc : list) {
             if (newAcct.equals(acc))
                 return false;
         }
@@ -249,7 +214,6 @@ public class FrontEnd {
     /**
      * create new account by accepting account number and name from user
      * only valid in agent mode
-     * adds account to account arraylist
      */
     private static void createAcc() {
         /*-----Getting account Number and checking for validity -----*/ //STILL NEED TO CHECK ACC NUM IS DIFFERENT THAN ALL ACCOUNTS
@@ -274,7 +238,7 @@ public class FrontEnd {
             System.out.println("Please enter valid account name");
             accountName = getInput();
         }
-        String output = "NEW " + accountNumStr + " 0 (none) " + accountName;
+        String output = "NEW " + accountNumStr + " 000 0000000 " + accountName;
         FileIOHelper.writeTransactionToLogFile(output, logFile);
     }
 
@@ -345,7 +309,7 @@ public class FrontEnd {
 
         // check valid account list file, read the valid account list file
         if (FileIOHelper.validateValidAccountListFile(accountFileName)) {
-            accounts = FileIOHelper.readAccountsFromFile(accountFileName);
+            list = FileIOHelper.readAccountList(accountFileName).toArray(list);
         } else {
             System.out.println("Account List file not valid.");
             System.exit(0);

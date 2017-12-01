@@ -88,11 +88,36 @@ public class FileIOHelper {
                     String name = getAccountName(line);
                     String number = getAccountNumber(line);
                     String value = getAccountValue(line);
-                    //account = new Account(number,value,name);
-                    account = new Account(line, "0", "");
+                    account = new Account(number,value,name);
+                    //account = new Account(line, "0", "");
                     accounts.add(account);
                 }
                 return accounts;
+            } else {
+                System.out.println("Could not read file.");
+            }
+
+        } catch (Exception e) {
+
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+    
+    public static ArrayList<String> readAccountList(String accountFileName) {
+        String line; /* line from the file */
+        ArrayList<String> list = new ArrayList<>(); /* a master list of all account numbers */
+
+        try {
+            // add each line from the file into the global array list containing contents of the account file
+
+            BufferedReader reader = readerFromFile(accountFileName);
+
+            if (reader != null) {
+                while ((line = reader.readLine()) != null) {
+                    list.add(line);
+                }
+                return list;
             } else {
                 System.out.println("Could not read file.");
             }
@@ -164,8 +189,7 @@ public class FileIOHelper {
             String accountNumber = "";
             BufferedReader reader = readerFromFile(filename);
             if (reader != null) {
-                while (reader.readLine() != null) {
-                    line = reader.readLine();
+                while ((line = reader.readLine()) != null) {
                     // check that length of line is less than 8 characters
                     if (line.length() > 8) {
                         System.out.println("Too many characters in the line of the account list.\n");
@@ -177,7 +201,7 @@ public class FileIOHelper {
                         return false;
                     }
                 }
-                if (line != "0000000") {
+                if (line.equals("0000000")) {
                     System.out.println("Account list file not properly terminated.\n");
                     return false;
                 }
