@@ -104,10 +104,9 @@ public class FileIOHelper {
         return null;
     }
     
-    public static ArrayList<String> readAccountList(String accountFileName) {
-        String line; /* line from the file */
+    public static String[] readAccountList(String accountFileName) {
+        String line = null; /* line from the file */
         ArrayList<String> list = new ArrayList<>(); /* a master list of all account numbers */
-
         try {
             // add each line from the file into the global array list containing contents of the account file
 
@@ -117,13 +116,13 @@ public class FileIOHelper {
                 while ((line = reader.readLine()) != null) {
                     list.add(line);
                 }
-                return list;
+                String[] l = new String[list.size()];
+                l = list.toArray(l);
+                return l;
             } else {
                 System.out.println("Could not read file.");
             }
-
         } catch (Exception e) {
-
             System.out.println(e.getMessage());
         }
         return null;
@@ -200,10 +199,10 @@ public class FileIOHelper {
                         System.out.println("Account number begins with 0.\n");
                         return false;
                     }
-                }
-                if (line.equals("0000000")) {
-                    System.out.println("Account list file not properly terminated.\n");
-                    return false;
+                    if (line.equals("0000000")) {
+                        System.out.println("Account list file not properly terminated.\n");
+                        return false;
+                    }
                 }
             } else {
                 System.out.println("Could not read file.\n");

@@ -9,8 +9,7 @@ import java.util.Scanner;
 public class FrontEnd {
 
     private static Scanner screen;
-    private static ArrayList<String> accounts = new ArrayList<>(); /* using the account class */
-    private static String[] list;
+    private static String[] list = null;
     private static UserType user; /* user is "atm" or "agent" */
     private static PrintWriter logFile; /* the log file for all transactions */
     private static String accountFileName = "";
@@ -309,7 +308,7 @@ public class FrontEnd {
 
         // check valid account list file, read the valid account list file
         if (FileIOHelper.validateValidAccountListFile(accountFileName)) {
-            list = FileIOHelper.readAccountList(accountFileName).toArray(list);
+            list = FileIOHelper.readAccountList(accountFileName);
         } else {
             System.out.println("Account List file not valid.");
             System.exit(0);
