@@ -29,6 +29,7 @@ public class BackEnd {
             }
 
         } catch (Exception e) {
+            System.out.println("frfgrnr");
             System.out.println(e.getMessage());
         }
     }
@@ -148,7 +149,7 @@ public class BackEnd {
     private static void createTran(String[] tran) {
         String accountNum = tran[1];
         String accountName = getAccountNameFromTransaction(tran);
-
+        System.out.println("HELOLLOW");
         if (createOK(accountNum, accountName)) {
             accounts.add(new Account(accountNum, "0", accountName));
             System.out.println("Account created.");
@@ -244,8 +245,24 @@ public class BackEnd {
      * Checks to see if the master account file is in the right format, then initializes the account list
      */
     private static void initializeAccounts() {
+        String line;
+        String[] split;
         if (FileIOHelper.validateMasterAccountFile(oldMasterAccountFile)) {
+           /* System.out.println("First");
+            BufferedReader reader = FileIOHelper.readerFromFile(oldMasterAccountFile);
+            try {
+                while ((line = reader.readLine()) != null) {
+                    split = line.split("\\s+");
+                    System.out.println(split[2]);
+
+                }
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+
+*/
             accounts = FileIOHelper.readAccountsFromFile(oldMasterAccountFile);
+            System.out.println("second");
         } else {
             System.out.println("Could not read master account file.");
             System.exit(0);

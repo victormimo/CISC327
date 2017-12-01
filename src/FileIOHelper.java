@@ -42,6 +42,7 @@ public class FileIOHelper {
      */
     public static BufferedReader readerFromFile(String fileName) {
         try {
+            System.out.println("third");
             // use the file path to get the file
             Path path = FileSystems.getDefault().getPath(fileName);
             File file = new File(fileName); /* used to determine that there is a file at that path */
@@ -78,9 +79,16 @@ public class FileIOHelper {
 
         try {
             // add each line from the file into the global array list containing contents of the account file
+
             BufferedReader reader = readerFromFile(accountFileName);
+
             if (reader != null) {
                 while ((line = reader.readLine()) != null) {
+                    System.out.println(line); // heres the issue
+                    String name = getAccountName(line);
+                    String number = getAccountNumber(line);
+                    String value = getAccountValue(line);
+                    //account = new Account(number,value,name);
                     account = new Account(line, "0", "");
                     accounts.add(account);
                 }
@@ -90,6 +98,7 @@ public class FileIOHelper {
             }
 
         } catch (Exception e) {
+
             System.out.println(e.getMessage());
         }
         return null;

@@ -1,0 +1,17 @@
+Welcome to QBASIC.
+Please type login.
+Please login as: machine or agent
+third
+Could not read file.
+
+third
+1004353
+1
+Please select a transaction
+A. deposit to an account
+B. withdraw from an account
+C. transfer from one account to another
+D. creating a new account
+E. delete an existing account
+Please enter the letter: 
+Please type in account number 7 digits long not starting with 0

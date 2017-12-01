@@ -18,7 +18,7 @@ def run_java(java_file, valid_acc_list, trans_proc):
 	proc.wait()
 
 def main():
-	valid_acc_list = 'ValidAccountFile.txt'
+	valid_acc_list = 'ValidAccountList.txt'
 	for trans_proc in os.listdir(dir):
 		# do something
 		print trans_proc

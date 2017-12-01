@@ -12,4 +12,4 @@ do
     diff NEWoutputs/Accounts$i.txt NEWexpects/Accounts$i.txt
     diff NEWoutputs/List$i.txt NEWexpects/List$i.txt
     diff NEWoutputs/$i.log NEWexpects/$i.log
-done
+done 
