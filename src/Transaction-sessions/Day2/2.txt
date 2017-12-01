@@ -1,0 +1,6 @@
+login
+agent
+A
+6590009
+1000
+end

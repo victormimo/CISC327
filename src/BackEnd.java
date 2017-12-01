@@ -149,7 +149,7 @@ public class BackEnd {
     private static void createTran(String[] tran) {
         String accountNum = tran[1];
         String accountName = getAccountNameFromTransaction(tran);
-        System.out.println("HELOLLOW");
+
         if (createOK(accountNum, accountName)) {
             accounts.add(new Account(accountNum, "0", accountName));
             System.out.println("Account created.");
@@ -260,7 +260,7 @@ public class BackEnd {
 
 */
             accounts = FileIOHelper.readAccountsFromFile(oldMasterAccountFile);
-            System.out.println("second");
+
         } else {
             System.out.println("Could not read master account file.");
             System.exit(0);

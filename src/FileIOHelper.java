@@ -42,7 +42,7 @@ public class FileIOHelper {
      */
     public static BufferedReader readerFromFile(String fileName) {
         try {
-            System.out.println("third");
+
             // use the file path to get the file
             Path path = FileSystems.getDefault().getPath(fileName);
             File file = new File(fileName); /* used to determine that there is a file at that path */
@@ -84,7 +84,7 @@ public class FileIOHelper {
 
             if (reader != null) {
                 while ((line = reader.readLine()) != null) {
-                    System.out.println(line); // heres the issue
+
                     String name = getAccountName(line);
                     String number = getAccountNumber(line);
                     String value = getAccountValue(line);
