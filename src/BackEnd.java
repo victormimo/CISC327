@@ -261,7 +261,7 @@ public class BackEnd {
     	/*
         // Used for debugging.
         transactionSummaryFile = "transaction-log.txt";
-        oldMasterAccountFile = "MasterAccountFileValid.txt";
+        oldMasterAccountFile = "ValidAccountList.txt";
         newMasterAccountFile = "newMaster.txt";
         newValidAccountsList = "newList.txt";
         */
