@@ -17,4 +17,7 @@ echo 'EOS' >> MergedTransactionSummaryFile.txt
 javac BackEnd.java
 
 echo "Running BackEnd"
-java BackEnd MergedTransactionSummaryFile.txt MasterAccountFile.txt MasterAccountFile.txt > outputsB/$1/MasterAccountFile.txt ValidAccountList.txt
+
+java BackEnd MergedTransactionSummaryFile.txt MasterAccountFile.txt outputsB/$1/MasterAccountFile.txt ValidAccountList.txt
+
+java BackEnd MergedTransactionSummaryFile.txt MasterAccountFile.txt MasterAccountFile.txt  ValidAccountList.txt
