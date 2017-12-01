@@ -81,7 +81,7 @@ public class FileIOHelper {
             BufferedReader reader = readerFromFile(accountFileName);
             if (reader != null) {
                 while ((line = reader.readLine()) != null) {
-                    account = new Account(getAccountNumber(line), getAccountValue(line), getAccountName(line));
+                    account = new Account(line, "0", "");
                     accounts.add(account);
                 }
                 return accounts;
